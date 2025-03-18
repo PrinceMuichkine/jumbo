@@ -1,15 +1,18 @@
-name: "Bug report"
-description: Create a report to help us improve
+name: Bug Report
+description: File a bug report
 body:
   - type: markdown
     attributes:
       value: |
-        Thank you for reporting an issue :pray:.
-
-        This issue tracker is for bugs and issues found with [Bolt.new](https://bolt.new).
-        If you experience issues related to WebContainer, please file an issue in our [WebContainer repo](https://github.com/stackblitz/webcontainer-core), or file an issue in our [StackBlitz core repo](https://github.com/stackblitz/core) for issues with StackBlitz.
-
-        The more information you fill in, the better we can help you.
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Tell us what you see!
+    validations:
+      required: true
   - type: textarea
     id: description
     attributes:
@@ -20,7 +23,7 @@ body:
   - type: input
     id: link
     attributes:
-      label: Link to the Bolt URL that caused the error
+      label: Link to the Jumbo URL that caused the error
       description: Please do not delete it after reporting!
     validations:
       required: true
@@ -35,7 +38,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        ![Making your project public](https://github.com/stackblitz/bolt.new/blob/main/public/project-visibility.jpg?raw=true)
+        ![Making your project public](https://github.com/princemuichkine/jumbo.dev/blob/main/public/project-visibility.jpg?raw=true)
   - type: textarea
     id: steps
     attributes:

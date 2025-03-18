@@ -13,6 +13,6 @@ export interface ShellAction extends BaseAction {
   type: 'shell';
 }
 
-export type BoltAction = FileAction | ShellAction;
+export type JumboAction = FileAction | ShellAction;
 
-export type BoltActionData = BoltAction | BaseAction;
+export type JumboActionData = JumboAction | BaseAction;

@@ -3,9 +3,9 @@ import { chatStore } from '~/lib/stores/chat';
 import { workbenchStore } from '~/lib/stores/workbench';
 import { classNames } from '~/utils/classNames';
 
-interface HeaderActionButtonsProps {}
+interface HeaderActionButtonsProps { }
 
-export function HeaderActionButtons({}: HeaderActionButtonsProps) {
+export function HeaderActionButtons({ }: HeaderActionButtonsProps) {
   const showWorkbench = useStore(workbenchStore.showWorkbench);
   const { showChat } = useStore(chatStore);
 
@@ -13,7 +13,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
 
   return (
     <div className="flex">
-      <div className="flex border border-bolt-elements-borderColor rounded-md overflow-hidden">
+      <div className="flex border border-jumbo-elements-borderColor rounded-md overflow-hidden">
         <Button
           active={showChat}
           disabled={!canHideChat}
@@ -23,9 +23,9 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
             }
           }}
         >
-          <div className="i-bolt:chat text-sm" />
+          <div className="i-jumbo:chat text-sm" />
         </Button>
-        <div className="w-[1px] bg-bolt-elements-borderColor" />
+        <div className="w-[1px] bg-jumbo-elements-borderColor" />
         <Button
           active={showWorkbench}
           onClick={() => {
@@ -54,10 +54,10 @@ function Button({ active = false, disabled = false, children, onClick }: ButtonP
   return (
     <button
       className={classNames('flex items-center p-1.5', {
-        'bg-bolt-elements-item-backgroundDefault hover:bg-bolt-elements-item-backgroundActive text-bolt-elements-textTertiary hover:text-bolt-elements-textPrimary':
+        'bg-jumbo-elements-item-backgroundDefault hover:bg-jumbo-elements-item-backgroundActive text-jumbo-elements-textTertiary hover:text-jumbo-elements-textPrimary':
           !active,
-        'bg-bolt-elements-item-backgroundAccent text-bolt-elements-item-contentAccent': active && !disabled,
-        'bg-bolt-elements-item-backgroundDefault text-alpha-gray-20 dark:text-alpha-white-20 cursor-not-allowed':
+        'bg-jumbo-elements-item-backgroundAccent text-jumbo-elements-item-contentAccent': active && !disabled,
+        'bg-jumbo-elements-item-backgroundDefault text-alpha-gray-20 dark:text-alpha-white-20 cursor-not-allowed':
           disabled,
       })}
       onClick={onClick}
