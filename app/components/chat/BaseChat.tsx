@@ -1,6 +1,6 @@
 import type { Message } from 'ai';
 import React, { type RefCallback } from 'react';
-import { ClientOnly } from '@/components/utils/ClientOnly';
+import { ClientOnly } from 'remix-utils/client-only';
 import { Menu } from '@/components/sidebar/Menu.client';
 import { IconButton } from '@/components/ui/IconButton';
 import { Workbench } from '@/components/workbench/Workbench.client';

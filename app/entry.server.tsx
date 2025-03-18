@@ -1,35 +1,34 @@
-import { renderToReadableStream } from 'react-dom/server';
+import type { AppLoadContext, EntryContext } from '@remix-run/cloudflare';
+import { RemixServer } from '@remix-run/react';
 import { isbot } from 'isbot';
-import { StaticRouter } from 'react-router-dom/server';
-import { Router } from './router';
+import { renderToReadableStream } from 'react-dom/server';
+import { renderHeadToString } from 'remix-island';
+import { Head } from './root';
 import { themeStore } from '@/lib/stores/theme';
 
 export default async function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
+  remixContext: EntryContext,
+  _loadContext: AppLoadContext,
 ) {
-  const url = new URL(request.url);
-
-  const readable = await renderToReadableStream(
-    <StaticRouter location={url.pathname + url.search}>
-      <Router />
-    </StaticRouter>,
-    {
-      signal: request.signal,
-      onError(error: unknown) {
-        console.error(error);
-        responseStatusCode = 500;
-      },
-    }
-  );
+  const readable = await renderToReadableStream(<RemixServer context={remixContext} url={request.url} />, {
+    signal: request.signal,
+    onError(error: unknown) {
+      console.error(error);
+      responseStatusCode = 500;
+    },
+  });
 
   const body = new ReadableStream({
     start(controller) {
+      const head = renderHeadToString({ request, remixContext, Head });
+
       controller.enqueue(
         new Uint8Array(
           new TextEncoder().encode(
-            `<!DOCTYPE html><html lang="en" data-theme="${themeStore.value}"><head></head><body><div id="root" class="w-full h-full">`,
+            `<!DOCTYPE html><html lang="en" data-theme="${themeStore.value}"><head>${head}</head><body><div id="root" class="w-full h-full">`,
           ),
         ),
       );

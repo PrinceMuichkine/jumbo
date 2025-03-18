@@ -1,3 +1,4 @@
+import { cloudflareDevProxyVitePlugin as remixCloudflareDevProxy, vitePlugin as remixVitePlugin } from '@remix-run/dev';
 import UnoCSS from 'unocss/vite';
 import { defineConfig, type ViteDevServer } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
@@ -8,16 +9,22 @@ export default defineConfig((config) => {
   return {
     build: {
       target: 'esnext',
-      outDir: 'dist',
     },
     plugins: [
       nodePolyfills({
         include: ['path', 'buffer'],
       }),
+      config.mode !== 'test' && remixCloudflareDevProxy(),
+      remixVitePlugin({
+        future: {
+          v3_fetcherPersist: true,
+          v3_relativeSplatPath: true,
+          v3_throwAbortReason: true,
+        },
+      }),
       UnoCSS(),
       tsconfigPaths(),
       chrome129IssuePlugin(),
-      crossOriginIsolationPlugin(),
       config.mode === 'production' && optimizeCssModules({ apply: 'build' }),
     ],
   };
@@ -36,34 +43,13 @@ function chrome129IssuePlugin() {
           if (version === 129) {
             res.setHeader('content-type', 'text/html');
             res.end(
-              '<body><h1>Please use Chrome Canary for testing.</h1><p>Chrome 129 has an issue with JavaScript modules & Vite local development, see <a href="https://github.com/princemuichkine/jumbo.dev/issues/86#issuecomment-2395519258">for more information.</a></p><p><b>Note:</b> This only impacts <u>local development</u>. `pnpm run build` and `pnpm run start` will work fine in this browser.</p></body>',
+              '<body><h1>Please use Chrome Canary for testing.</h1><p>Chrome 129 has an issue with JavaScript modules & Vite local development, see <a href="https://github.com/stackblitz/jumbo.dev/issues/86#issuecomment-2395519258">for more information.</a></p><p><b>Note:</b> This only impacts <u>local development</u>. `pnpm run build` and `pnpm run start` will work fine in this browser.</p></body>',
             );
 
             return;
           }
         }
 
-        next();
-      });
-    },
-  };
-}
-
-/**
- * Provides cross-origin isolation for WebContainer API compatibility
- * during local development (production already handles this in entry.server.tsx)
- */
-function crossOriginIsolationPlugin() {
-  return {
-    name: 'crossOriginIsolationPlugin',
-    configureServer(server: ViteDevServer) {
-      server.middlewares.use((req, res, next) => {
-        // add COOP/COEP headers required for WebContainer API
-        res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
-        res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
-
-        // add Cross-Origin-Resource-Policy for additional compatibility
-        res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
         next();
       });
     },

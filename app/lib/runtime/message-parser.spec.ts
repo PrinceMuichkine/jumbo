@@ -59,10 +59,20 @@ describe('StreamingMessageParser', () => {
         },
       ],
       [
+        ['Some text before <jumboArti', 'fact', ' title="Some title" id="artifact_1">foo</jumboArtifact> Some more text'],
+        {
+          output: 'Some text before  Some more text',
+          callbacks: { onArtifactOpen: 1, onArtifactClose: 1, onActionOpen: 0, onActionClose: 0 },
+        },
+      ],
+      [
         [
           'Some text before <jumboArti',
-          'fact',
-          ' title="Some title" id="artifact_1">foo</jumboArtifact> Some more text',
+          'fac',
+          't title="Some title" id="artifact_1"',
+          ' ',
+          '>',
+          'foo</jumboArtifact> Some more text',
         ],
         {
           output: 'Some text before  Some more text',
@@ -73,18 +83,9 @@ describe('StreamingMessageParser', () => {
         [
           'Some text before <jumboArti',
           'fact',
-          ' title="Some title" id="artifact_1">foo</jumboArtifact> Some more text',
-        ],
-        {
-          output: 'Some text before  Some more text',
-          callbacks: { onArtifactOpen: 1, onArtifactClose: 1, onActionOpen: 0, onActionClose: 0 },
-        },
-      ],
-      [
-        [
-          'Some text before <jumboArti',
-          'fact',
-          ' title="Some title" id="artifact_1">foo</jumboArtifact> Some more text',
+          ' title="Some title" id="artifact_1"',
+          ' >fo',
+          'o</jumboArtifact> Some more text',
         ],
         {
           output: 'Some text before  Some more text',

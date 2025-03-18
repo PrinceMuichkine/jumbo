@@ -190,8 +190,7 @@ function File({ file: { depth, name }, onClick, selected, unsavedChanges = false
   return (
     <NodeButton
       className={classNames('group', {
-        'bg-transparent hover:bg-jumbo-elements-item-backgroundActive text-jumbo-elements-item-contentDefault':
-          !selected,
+        'bg-transparent hover:bg-jumbo-elements-item-backgroundActive text-jumbo-elements-item-contentDefault': !selected,
         'bg-jumbo-elements-item-backgroundAccent text-jumbo-elements-item-contentAccent': selected,
       })}
       depth={depth}

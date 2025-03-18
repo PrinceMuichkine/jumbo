@@ -1,14 +1,11 @@
-/* Forward all variables to make them available to component files */
-@forward './variables.scss';
-@forward './z-index.scss';
-@forward './animations.scss';
-
-/* Import component styles */
-@use './components/terminal.scss';
-@use './components/resize-handle.scss';
-@use './components/code.scss';
-@use './components/editor.scss';
-@use './components/toast.scss';
+@import './variables.scss';
+@import './z-index.scss';
+@import './animations.scss';
+@import './components/terminal.scss';
+@import './components/resize-handle.scss';
+@import './components/code.scss';
+@import './components/editor.scss';
+@import './components/toast.scss';
 
 html,
 body {

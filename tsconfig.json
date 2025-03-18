@@ -6,8 +6,9 @@
       "ESNext"
     ],
     "types": [
+      "@remix-run/cloudflare",
       "vite/client",
-      "@cloudflare/workers-types"
+      "@cloudflare/workers-types/2023-07-01"
     ],
     "isolatedModules": true,
     "esModuleInterop": true,
@@ -35,6 +36,18 @@
     "**/.server/**/*.ts",
     "**/.server/**/*.tsx",
     "**/.client/**/*.ts",
-    "**/.client/**/*.tsx"
+    "**/.client/**/*.tsx",
+    "../app/components/ui/button-expand.tsx",
+    "../app/components/ui/button-variants.ts",
+    "../app/components/ui/button.tsx",
+    "../app/components/ui/Dialog.tsx",
+    "../app/components/ui/IconButton.tsx",
+    "../app/components/ui/LoadingDots.tsx",
+    "../app/components/ui/PanelHeader.tsx",
+    "../app/components/ui/PanelHeaderButton.tsx",
+    "../app/components/ui/Slider.tsx",
+    "../app/components/ui/ThemeSwitch.tsx",
+    "../app/components/ui/toast.tsx",
+    "../app/lib/hooks/use-toast.ts"
   ]
 }

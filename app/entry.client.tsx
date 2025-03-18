@@ -1,20 +1,7 @@
+import { RemixBrowser } from '@remix-run/react';
 import { startTransition } from 'react';
 import { hydrateRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import { Router } from './router';
-
-// Import style sheets directly
-import '@unocss/reset/tailwind-compat.css';
-import 'react-toastify/dist/ReactToastify.css';
-import './styles/index.scss';
-import '@xterm/xterm/css/xterm.css';
-import 'virtual:uno.css';
 
 startTransition(() => {
-  hydrateRoot(
-    document.getElementById('root')!,
-    <BrowserRouter>
-      <Router />
-    </BrowserRouter>
-  );
+  hydrateRoot(document.getElementById('root')!, <RemixBrowser />);
 });
