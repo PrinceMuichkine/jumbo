@@ -25,6 +25,7 @@ export default defineConfig((config) => {
       UnoCSS(),
       tsconfigPaths(),
       chrome129IssuePlugin(),
+      crossOriginIsolationPlugin(),
       config.mode === 'production' && optimizeCssModules({ apply: 'build' }),
     ],
   };
@@ -50,6 +51,27 @@ function chrome129IssuePlugin() {
           }
         }
 
+        next();
+      });
+    },
+  };
+}
+
+/**
+ * Provides cross-origin isolation for WebContainer API compatibility
+ * during local development (production already handles this in entry.server.tsx)
+ */
+function crossOriginIsolationPlugin() {
+  return {
+    name: 'crossOriginIsolationPlugin',
+    configureServer(server: ViteDevServer) {
+      server.middlewares.use((req, res, next) => {
+        // add COOP/COEP headers required for WebContainer API
+        res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+        res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+
+        // add Cross-Origin-Resource-Policy for additional compatibility
+        res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
         next();
       });
     },

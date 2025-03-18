@@ -6,11 +6,11 @@
 
 By building with the Jumbo + WebContainer API you can create browser-based applications that let users **prompt, run, edit, and deploy** full-stack web apps directly in the browser, without the need for virtual machines. With WebContainer API, you can build apps that give AI direct access and full control over a **Node.js server**, **filesystem**, **package manager** and **dev terminal** inside your users browser tab. This powerful combination allows you to create a new class of development tools that support all major JavaScript libraries and Node packages right out of the box, all without remote environments or local installs.
 
-### What’s the Difference Between Jumbo (This Repo) and [Jumbo.new](https://jumbo.dev)?
+### What’s the Difference Between Jumbo (This Repo) and [Jumbo.dev](https://jumbo.dev)?
 
-- **Jumbo.new**: This is the **commercial product** from StackBlitz—a hosted, browser-based AI development tool that enables users to prompt, run, edit, and deploy full-stack web applications directly in the browser. Built on top of the [Jumbo open-source repo](https://github.com/lomi./jumbo.dev) and powered by the lomi. **WebContainer API**.
+- **Jumbo.dev**: This is the **commercial product** from StackBlitz—a hosted, browser-based AI development tool that enables users to prompt, run, edit, and deploy full-stack web applications directly in the browser. Built on top of the [Jumbo open-source repo](https://github.com/lomi./jumbo.dev) and powered by the lomi. **WebContainer API**.
 
-- **Jumbo (This Repo)**: This open-source repository provides the core components used to make **Jumbo.new**. This repo contains the UI interface for Jumbo as well as the server components, built using [Remix Run](https://remix.run/). By leveraging this repo and StackBlitz’s **WebContainer API**, you can create your own AI-powered development tools and full-stack applications that run entirely in the browser.
+- **Jumbo (This Repo)**: This open-source repository provides the core components used to make **Jumbo.dev**. This repo contains the UI interface for Jumbo as well as the server components, built using [Remix Run](https://remix.run/). By leveraging this repo and StackBlitz’s **WebContainer API**, you can create your own AI-powered development tools and full-stack applications that run entirely in the browser.
 
 # Get Started Building with Jumbo
 

@@ -1,0 +1,108 @@
+{
+  "name": "Jumbo.dev | AI-Powered Full-Stack Web Development in the Browser",
+  "short_name": "Jumbo.dev",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "description": "Build and deploy full-stack web apps in your browser with Jumbo.dev. Use AI to generate code, integrate payment solutions, and deploy to Netlify in minutes.",
+  "icons": [
+    {
+      "src": "/social_preview_index.jpg",
+      "sizes": "1200x630",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/jumbo-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/jumbo-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "categories": [
+    "development",
+    "web-development",
+    "ai-tools",
+    "code-generator",
+    "full-stack",
+    "browser-ide",
+    "code-editor",
+    "javascript",
+    "webapp-builder",
+    "deploy-tools",
+    "payment-integration",
+    "lomi-payments",
+    "west-africa-payments",
+    "netlify-deploy",
+    "webcontainer",
+    "supabase-integration",
+    "github-integration",
+    "react",
+    "nextjs",
+    "vite",
+    "no-setup-development",
+    "code-export",
+    "browser-development",
+    "mobile-app-development",
+    "expo",
+    "deployment-automation",
+    "web3",
+    "payment-orchestration",
+    "payment-gateway",
+    "payment-api"
+  ],
+  "shortcuts": [
+    {
+      "name": "New Project",
+      "url": "/new",
+      "description": "Start a new Jumbo.dev project"
+    },
+    {
+      "name": "Templates",
+      "url": "/templates",
+      "description": "Browse Jumbo.dev templates"
+    },
+    {
+      "name": "Documentation",
+      "url": "/docs",
+      "description": "View Jumbo.dev documentation"
+    },
+    {
+      "name": "Sign In",
+      "url": "/auth/signin",
+      "description": "Sign in to your Jumbo.dev account"
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "web",
+      "url": "https://lomi.africa",
+      "id": "africa.lomi.app"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/jumbo-dashboard.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "platform": "wide",
+      "label": "Jumbo.dev Dashboard"
+    }
+  ],
+  "lang": "en",
+  "dir": "ltr",
+  "orientation": "any",
+  "iarc_rating_id": "",
+  "locales": {
+    "fr": {
+      "name": "Jumbo.dev | Développement Web Full-Stack Propulsé par l'IA dans le Navigateur",
+      "short_name": "Jumbo.dev",
+      "description": "Créez et déployez des applications web full-stack directement dans votre navigateur avec Jumbo.dev. Utilisez l'IA pour générer du code, intégrer des solutions de paiement, et déployer sur Netlify en quelques minutes."
+    }
+  }
+}

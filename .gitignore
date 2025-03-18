@@ -1,3 +1,4 @@
+## Logs
 logs
 *.log
 npm-debug.log*
@@ -6,11 +7,15 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+## Node modules
 node_modules
+
+## Dist
 dist
 dist-ssr
 *.local
 
+## VSCode
 .vscode/*
 !.vscode/launch.json
 !.vscode/extensions.json
@@ -22,8 +27,14 @@ dist-ssr
 *.sln
 *.sw?
 
-/.cache
+## Cache
+.cache
+
+## Build
 /build
+.cursor
+
+## Environment
 .env*
 *.vars
 .wrangler

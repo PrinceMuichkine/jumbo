@@ -1,29 +1,27 @@
-[![Jumbo.new: AI-Powered Full-Stack Web Development in the Browser](./public/social_preview_index.jpg)](https://jumbo.dev)
+# Jumbo.dev: AI-Powered Full-Stack Web Development in the Browser
 
-# Jumbo.new: AI-Powered Full-Stack Web Development in the Browser
+Jumbo.dev is an AI-powered web development agent that allows you to prompt, run, edit, and deploy full-stack applications directly from your browser—no local setup required. If you're here to build your own AI-powered web dev agent using the Jumbo open source codebase, [click here to get started!](./CONTRIBUTING.md)
 
-Jumbo.new is an AI-powered web development agent that allows you to prompt, run, edit, and deploy full-stack applications directly from your browser—no local setup required. If you're here to build your own AI-powered web dev agent using the Jumbo open source codebase, [click here to get started!](./CONTRIBUTING.md)
+## What Makes Jumbo.dev Different
 
-## What Makes Jumbo.new Different
+Claude, v0, etc are incredible- but you can't install packages, run backends or edit code. That’s where Jumbo.dev stands out:
 
-Claude, v0, etc are incredible- but you can't install packages, run backends or edit code. That’s where Jumbo.new stands out:
-
-- **Full-Stack in the Browser**: Jumbo.new integrates cutting-edge AI models with an in-browser development environment powered by **lomi.’s WebContainers**. This allows you to:
+- **Full-Stack in the Browser**: Jumbo.dev integrates cutting-edge AI models with an in-browser development environment powered by **lomi.’s WebContainers**. This allows you to:
   - Install and run npm tools and libraries (like Vite, Next.js, and more)
   - Run Node.js servers
   - Interact with third-party APIs
   - Deploy to production from chat
   - Share your work via a URL
 
-- **AI with Environment Control**: Unlike traditional dev environments where the AI can only assist in code generation, Jumbo.new gives AI models **complete control** over the entire  environment including the filesystem, node server, package manager, terminal, and browser console. This empowers AI agents to handle the entire app lifecycle—from creation to deployment.
+- **AI with Environment Control**: Unlike traditional dev environments where the AI can only assist in code generation, Jumbo.dev gives AI models **complete control** over the entire  environment including the filesystem, node server, package manager, terminal, and browser console. This empowers AI agents to handle the entire app lifecycle—from creation to deployment.
 
-Whether you’re an experienced developer, a PM or designer, Jumbo.new allows you to build production-grade full-stack applications with ease.
+Whether you’re an experienced developer, a PM or designer, Jumbo.dev allows you to build production-grade full-stack applications with ease.
 
 For developers interested in building their own AI-powered development tools with WebContainers, check out the open-source Jumbo codebase in this repo!
 
 ## Tips and Tricks
 
-Here are some tips to get the most out of Jumbo.new:
+Here are some tips to get the most out of Jumbo.dev:
 
 - **Be specific about your stack**: If you want to use specific frameworks or libraries (like Astro, Tailwind, ShadCN, or any other popular JavaScript framework), mention them in your initial prompt to ensure Jumbo scaffolds the project accordingly.
 
@@ -36,19 +34,19 @@ Here are some tips to get the most out of Jumbo.new:
 ## FAQs
 
 **Where do I sign up for a paid plan?**  
-Jumbo.new is free to get started. If you need more AI tokens or want private projects, you can purchase a paid subscription in your [Jumbo.new](https://jumbo.dev) settings, in the lower-left hand corner of the application. 
+Jumbo.dev is free to get started. If you need more AI tokens or want private projects, you can purchase a paid subscription in your [Jumbo.dev](https://jumbo.dev) settings, in the lower-left hand corner of the application. 
 
 **What happens if I hit the free usage limit?**  
 Once your free daily token limit is reached, AI interactions are paused until the next day or until you upgrade your plan.
 
 **Is Jumbo in beta?**  
-Yes, Jumbo.new is in beta, and we are actively improving it based on feedback.
+Yes, Jumbo.dev is in beta, and we are actively improving it based on feedback.
 
-**How can I report Jumbo.new issues?**  
+**How can I report Jumbo.dev issues?**  
 Check out the [Issues section](https://github.com/lomi./jumbo.dev/issues) to report an issue or request a new feature. Please use the search feature to check if someone else has already submitted the same issue/request.
 
 **What frameworks/libraries currently work on Jumbo?**  
-Jumbo.new supports most popular JavaScript frameworks and libraries. If it runs on lomi., it will run on Jumbo.new as well.
+Jumbo.dev supports most popular JavaScript frameworks and libraries. If it runs on lomi., it will run on Jumbo.dev as well.
 
 **How can I add make sure my framework/project works well in jumbo?**  
 We are excited to work with the JavaScript ecosystem to improve functionality in Jumbo. Reach out to us via [hello@lomi..com](mailto:hello@lomi..com) to discuss how we can partner!

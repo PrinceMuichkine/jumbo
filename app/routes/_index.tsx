@@ -5,7 +5,11 @@ import { Chat } from '~/components/chat/Chat.client';
 import { Header } from '~/components/header/Header';
 
 export const meta: MetaFunction = () => {
-  return [{ title: 'Jumbo' }, { name: 'description', content: 'Talk with Jumbo, an AI assistant from lomi.' }];
+  return [
+    { title: 'Jumbo by lomi.' },
+    { name: 'description', content: 'Talk with Jumbo, an full-stack AI agent from lomi.' },
+    { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+  ];
 };
 
 export const loader = () => json({});
