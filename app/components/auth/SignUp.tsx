@@ -1,7 +1,9 @@
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import * as React from 'react';
-import { supabase, getRedirectURL } from '@/lib/supabase/client';
+import { getRedirectURL } from '@/lib/supabase/client';
+import { useOutletContext } from '@remix-run/react';
+import type { SupabaseOutletContext } from '@/lib/types/supabase.types';
 
 interface SignUpProps {
   onSwitchToSignIn?: () => void;
@@ -12,6 +14,7 @@ export function SignUp({ onSwitchToSignIn }: SignUpProps) {
   const [password, setPassword] = React.useState('');
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const { supabase } = useOutletContext<SupabaseOutletContext>();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
