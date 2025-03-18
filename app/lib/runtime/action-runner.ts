@@ -1,9 +1,9 @@
 import { WebContainer } from '@webcontainer/api';
 import { map, type MapStore } from 'nanostores';
 import * as nodePath from 'node:path';
-import type { JumboAction } from '~/types/actions';
-import { createScopedLogger } from '~/utils/logger';
-import { unreachable } from '~/utils/unreachable';
+import type { JumboAction } from '@/types/actions';
+import { createScopedLogger } from '@/utils/logger';
+import { unreachable } from '@/utils/unreachable';
 import type { ActionCallbackData } from './message-parser';
 
 const logger = createScopedLogger('ActionRunner');

@@ -1,7 +1,7 @@
-import type { ActionType, JumboAction, JumboActionData, FileAction, ShellAction } from '~/types/actions';
-import type { JumboArtifactData } from '~/types/artifact';
-import { createScopedLogger } from '~/utils/logger';
-import { unreachable } from '~/utils/unreachable';
+import type { ActionType, JumboAction, JumboActionData, FileAction, ShellAction } from '@/types/actions';
+import type { JumboArtifactData } from '@/types/artifact';
+import { createScopedLogger } from '@/utils/logger';
+import { unreachable } from '@/utils/unreachable';
 
 const ARTIFACT_TAG_OPEN = '<jumboArtifact';
 const ARTIFACT_TAG_CLOSE = '</jumboArtifact>';

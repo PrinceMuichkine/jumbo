@@ -67,6 +67,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     document.querySelector('html')?.setAttribute('data-theme', theme);
+    document.body.className = 'bg-white dark:bg-jumbo-elements-bg-depth-1';
   }, [theme]);
 
   return (

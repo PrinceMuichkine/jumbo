@@ -4,7 +4,21 @@ import { getNamingConventionRule, tsFileExtensions } from '@blitz/eslint-plugin/
 
 export default [
   {
-    ignores: ['**/dist', '**/node_modules', '**/.wrangler', '**/jumbo/build'],
+    ignores: [
+      '**/dist',
+      '**/node_modules',
+      '**/.wrangler',
+      '**/jumbo/build',
+      '**/.cursor',
+      '**/.cursor/**',
+      '**/build',
+      '**/*.min.js',
+      '**/.cache',
+      '**/data',
+      '**/pnpm-lock.yaml',
+      '**/*.d.ts',
+      '**/data/**',
+    ],
   },
   ...blitzPlugin.configs.recommended(),
   {
@@ -12,6 +26,8 @@ export default [
       '@blitz/catch-error-name': 'off',
       '@typescript-eslint/no-this-alias': 'off',
       '@typescript-eslint/no-empty-object-type': 'off',
+      '@blitz/comment-syntax': 'off',
+      'prettier/prettier': 'off',
     },
   },
   {
@@ -36,7 +52,7 @@ export default [
           patterns: [
             {
               group: ['../'],
-              message: `Relative imports are not allowed. Please use '~/' instead.`,
+              message: `Relative imports are not allowed. Please use '@/' instead.`,
             },
           ],
         },

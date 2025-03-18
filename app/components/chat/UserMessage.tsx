@@ -1,4 +1,4 @@
-import { modificationsRegex } from '~/utils/diff';
+import { modificationsRegex } from '@/utils/diff';
 import { Markdown } from './Markdown';
 
 interface UserMessageProps {
