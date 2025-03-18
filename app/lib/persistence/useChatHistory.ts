@@ -1,4 +1,4 @@
-import { useLoaderData, useNavigate } from '@remix-run/react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { atom } from 'nanostores';
 import type { Message } from 'ai';
@@ -23,7 +23,8 @@ export const description = atom<string | undefined>(undefined);
 
 export function useChatHistory() {
   const navigate = useNavigate();
-  const { id: mixedId } = useLoaderData<{ id?: string }>();
+  const params = useParams();
+  const mixedId = params.id;
 
   const [initialMessages, setInitialMessages] = useState<Message[]>([]);
   const [ready, setReady] = useState<boolean>(false);
@@ -57,8 +58,10 @@ export function useChatHistory() {
         .catch((error) => {
           toast.error(error.message);
         });
+    } else {
+      setReady(true);
     }
-  }, []);
+  }, [mixedId, navigate]);
 
   return {
     ready: !mixedId || ready,
@@ -96,12 +99,11 @@ export function useChatHistory() {
   };
 }
 
+/**
+ * Updates the URL without triggering a re-render of the Chat component
+ */
 function navigateChat(nextId: string) {
-  /**
-   * FIXME: Using the intended navigate function causes a rerender for <Chat /> that breaks the app.
-   *
-   * `navigate(`/chat/${nextId}`, { replace: true });`
-   */
+  // Using the history API directly to avoid triggering re-renders
   const url = new URL(window.location.href);
   url.pathname = `/chat/${nextId}`;
 

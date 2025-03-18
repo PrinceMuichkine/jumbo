@@ -27,7 +27,7 @@ export function AuthModal({ open, onOpenChange, defaultTab = 'signin' }: AuthMod
       onClick={() => onOpenChange(false)}
     >
       <div
-        className="relative w-full max-w-md rounded-lg shadow-lg bg-white dark:bg-gray-950 p-6"
+        className="relative w-[425px] max-w-md rounded-lg shadow-lg bg-white dark:bg-gray-950 p-6"
         onClick={(e) => e.stopPropagation()}
       >
         <AnimatePresence mode="wait">

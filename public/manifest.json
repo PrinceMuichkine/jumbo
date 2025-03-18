@@ -1,27 +1,27 @@
 {
-  "name": "Jumbo.dev | AI-Powered Full-Stack Web Development in the Browser",
+  "name": "Jumbo.dev by lomi. | AI-Powered Full-Stack Web Development",
   "short_name": "Jumbo.dev",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
-  "description": "Build and deploy full-stack web apps in your browser with Jumbo.dev. Use AI to generate code, integrate payment solutions, and deploy to Netlify in minutes.",
+  "description": "Build and deploy full-stack web apps in your browser with Jumbo.dev. Use AI to create, design and ship code in minutes.",
   "icons": [
     {
-      "src": "/social_preview_index.jpg",
+      "src": "/social_preview.jpg",
       "sizes": "1200x630",
       "type": "image/jpeg",
       "purpose": "any"
     },
     {
-      "src": "/icons/jumbo-icon-512.png",
+      "src": "/icons/jumbo.svg",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/svg+xml"
     },
     {
-      "src": "/icons/jumbo-icon-192.png",
+      "src": "/icons/jumbo.svg",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/svg+xml"
     }
   ],
   "categories": [
@@ -58,11 +58,6 @@
   ],
   "shortcuts": [
     {
-      "name": "New Project",
-      "url": "/new",
-      "description": "Start a new Jumbo.dev project"
-    },
-    {
       "name": "Templates",
       "url": "/templates",
       "description": "Browse Jumbo.dev templates"
@@ -71,18 +66,13 @@
       "name": "Documentation",
       "url": "/docs",
       "description": "View Jumbo.dev documentation"
-    },
-    {
-      "name": "Sign In",
-      "url": "/auth/signin",
-      "description": "Sign in to your Jumbo.dev account"
     }
   ],
   "related_applications": [
     {
       "platform": "web",
       "url": "https://lomi.africa",
-      "id": "africa.lomi.app"
+      "id": "lomi.africa"
     }
   ],
   "screenshots": [
@@ -100,9 +90,9 @@
   "iarc_rating_id": "",
   "locales": {
     "fr": {
-      "name": "Jumbo.dev | Développement Web Full-Stack Propulsé par l'IA dans le Navigateur",
+      "name": "Jumbo.dev | Développement Web Full-Stack augmenté par l'IA",
       "short_name": "Jumbo.dev",
-      "description": "Créez et déployez des applications web full-stack directement dans votre navigateur avec Jumbo.dev. Utilisez l'IA pour générer du code, intégrer des solutions de paiement, et déployer sur Netlify en quelques minutes."
+      "description": "Créez et déployez des applications en quelques minutes avec Jumbo.dev."
     }
   }
 }

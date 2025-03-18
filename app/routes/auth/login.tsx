@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from '@remix-run/react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AuthModal } from '@/components/auth/AuthModal';
 
 export default function Login() {

@@ -17,7 +17,7 @@ interface ButtonExpandProps {
 
 function ButtonExpand({
   text,
-  icon: Icon = ArrowRight,
+  icon = ArrowRight,
   bgColor = "bg-green-50 dark:bg-green-900/30",
   textColor = "text-green-700 dark:text-green-300",
   hoverBgColor = "hover:bg-green-100 dark:hover:bg-green-900/40",
@@ -31,7 +31,7 @@ function ButtonExpand({
     <Button
       type={type}
       variant="expandIcon"
-      Icon={() => <Icon className="h-4 w-4" />}
+      icon={icon}
       iconPlacement={iconPlacement}
       className={`text-lg sm:text-base font-medium ${textColor} ${hoverTextColor} ${bgColor} ${hoverBgColor} shadow-lg transition-all duration-300 h-[52px] sm:h-10 px-[32px] sm:px-4 focus:outline-none focus-visible:outline-none ${className}`}
       onClick={onClick}

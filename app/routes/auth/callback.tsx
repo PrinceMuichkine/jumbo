@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { useNavigate } from '@remix-run/react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase/client';
 import { toast } from '@/lib/hooks/use-toast';
 
-export default function AuthCallback() {
+export function AuthCallback() {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -84,3 +84,5 @@ export default function AuthCallback() {
     </div>
   );
 }
+
+export default AuthCallback;

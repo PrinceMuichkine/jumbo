@@ -1,7 +1,7 @@
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import * as React from 'react';
-import { supabase } from '@/lib/supabase/client';
+import { supabase, getRedirectURL } from '@/lib/supabase/client';
 
 interface SignUpProps {
   onSwitchToSignIn?: () => void;
@@ -23,7 +23,7 @@ export function SignUp({ onSwitchToSignIn }: SignUpProps) {
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/api/auth/callback`,
+          emailRedirectTo: getRedirectURL(),
         },
       });
 
@@ -45,7 +45,7 @@ export function SignUp({ onSwitchToSignIn }: SignUpProps) {
 
   return (
     <div className="bg-transparent">
-      <h2 className="text-xl font-semibold mb-4 text-jumbo-elements-textPrimary text-center">Sign Up</h2>
+      <h2 className="text-xl font-semibold mb-4 text-jumbo-elements-textPrimary text-left">Create an account</h2>
       <div className="space-y-4">
         {/* Email signup form */}
         <form onSubmit={handleSignUp} className="space-y-4">
@@ -76,7 +76,7 @@ export function SignUp({ onSwitchToSignIn }: SignUpProps) {
               required
               minLength={6}
               className="w-full px-3 py-2 rounded-md border border-jumbo-elements-borderColor bg-white dark:bg-gray-800 text-jumbo-elements-textPrimary focus:outline-none focus:ring-1 focus:ring-jumbo-elements-button-primary-text"
-              placeholder="••••••••"
+              placeholder="••••••••••••"
             />
           </div>
 

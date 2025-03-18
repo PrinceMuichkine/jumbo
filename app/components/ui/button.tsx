@@ -5,12 +5,12 @@ import { cn } from "@/lib/actions/utils";
 import { buttonVariants } from "./button-variants";
 
 interface IconProps {
-  Icon: React.ElementType;
+  icon: React.ElementType;
   iconPlacement: "left" | "right";
 }
 
 interface IconRefProps {
-  Icon?: never;
+  icon?: never;
   iconPlacement?: undefined;
 }
 
@@ -32,7 +32,7 @@ const Button = React.forwardRef<
       variant,
       size,
       asChild = false,
-      Icon,
+      icon,
       iconPlacement,
       ...props
     },
@@ -45,15 +45,15 @@ const Button = React.forwardRef<
         ref={ref}
         {...props}
       >
-        {Icon && iconPlacement === "left" && (
+        {icon && iconPlacement === "left" && (
           <div className="w-0 translate-x-[0%] pr-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:translate-x-100 group-hover:pr-2 group-hover:opacity-100">
-            <Icon />
+            {React.createElement(icon)}
           </div>
         )}
         <Slottable>{props.children}</Slottable>
-        {Icon && iconPlacement === "right" && (
+        {icon && iconPlacement === "right" && (
           <div className="w-0 translate-x-[100%] pl-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:translate-x-0 group-hover:pl-2 group-hover:opacity-100">
-            <Icon />
+            {React.createElement(icon)}
           </div>
         )}
       </Comp>

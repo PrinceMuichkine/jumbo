@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
-import { supabase, signInWithGoogle, signInWithGitHub } from '@/lib/supabase/client';
+import { supabase, getRedirectURL } from '@/lib/supabase/client';
 import { toast } from '@/lib/hooks/use-toast';
 
 interface SignInProps {
@@ -22,7 +22,7 @@ export function SignIn({ onSwitchToSignUp }: SignInProps) {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: getRedirectURL(),
         },
       });
 
@@ -53,30 +53,9 @@ export function SignIn({ onSwitchToSignUp }: SignInProps) {
     }
   };
 
-  const handleOAuthSignIn = async (provider: 'github' | 'google') => {
-    try {
-      const { error } = provider === 'google'
-        ? await signInWithGoogle()
-        : await signInWithGitHub();
-
-      if (error) {
-        throw error;
-      }
-
-      // OAuth redirect is handled by Supabase client
-    } catch (error) {
-      console.error(`Error signing in with ${provider}:`, error);
-      toast({
-        title: "Error",
-        description: `Failed to sign in with ${provider}`,
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
     <div className="bg-transparent">
-      <h2 className="text-xl font-semibold mb-4 text-jumbo-elements-textPrimary text-center">Sign In</h2>
+      <h2 className="text-xl font-semibold mb-4 text-jumbo-elements-textPrimary text-left">Welcome back</h2>
       <div className="space-y-4">
         {/* Email login form */}
         <form onSubmit={handleLogin} className="space-y-4">
