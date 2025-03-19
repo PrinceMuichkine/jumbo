@@ -37,6 +37,9 @@ console.warn = function(...args) {
   originalConsoleWarn.apply(console, args);
 };
 
+// Check if we're in a CI environment (Vercel, GitHub Actions, etc.)
+const isCI = process.env.CI === 'true' || process.env.VERCEL === '1';
+
 export default defineConfig((config) => {
   return {
     build: {
@@ -67,7 +70,8 @@ export default defineConfig((config) => {
         include: ['path', 'buffer'],
       }),
       createSuppressScssWarningsPlugin(),
-      config.mode !== 'test' && remixCloudflareDevProxy(),
+      // Only use Cloudflare dev proxy in local development, not in CI/Vercel
+      !isCI && config.mode !== 'test' && remixCloudflareDevProxy(),
       remixVitePlugin({
         future: {
           v3_fetcherPersist: true,
