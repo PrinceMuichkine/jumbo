@@ -29,6 +29,7 @@ dist-ssr
 
 ## Cache
 .cache
+.vercel
 
 ## Build
 /build
