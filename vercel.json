@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 1,
   "framework": "remix",
   "buildCommand": "pnpm run build",
   "devCommand": "pnpm run dev",

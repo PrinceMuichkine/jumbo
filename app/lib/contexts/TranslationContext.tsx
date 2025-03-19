@@ -26,10 +26,11 @@ export function TranslationProvider({ children }: { children: React.ReactNode })
       setCurrentLanguage(savedLanguage as Language);
     } else {
       // Try to detect browser language
-      const browserLang = navigator.language.split('-')[0];
-
-      if (languages.some(lang => lang.code === browserLang)) {
-        setCurrentLanguage(browserLang as Language);
+      if (typeof navigator !== 'undefined') {
+        const browserLang = navigator.language.split('-')[0];
+        if (languages.some(lang => lang.code === browserLang)) {
+          setCurrentLanguage(browserLang as Language);
+        }
       }
     }
   }, []);

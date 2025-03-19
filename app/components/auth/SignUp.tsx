@@ -108,7 +108,8 @@ export function SignUp({ onSwitchToSignIn }: SignUpProps) {
 
         toast({
           title: "Account created",
-          description: "Your account has been created successfully. You can now sign in.",
+          description: "Check your email for a verification link to activate your account.",
+          variant: "success",
         });
       }
     } catch (err) {

@@ -40,13 +40,14 @@ export default function ResetPassword() {
       } else {
         setSuccess(true);
         toast({
-          title: "Success",
-          description: "Your password has been reset successfully.",
+          title: "Password updated",
+          description: "Your password has been reset successfully. You'll be redirected to login shortly.",
+          variant: "success",
         });
         // Redirect after successful password reset
         setTimeout(() => {
           window.location.href = '/';
-        }, 2000);
+        }, 3000);
       }
     } catch (err) {
       console.error('Error resetting password:', err);
