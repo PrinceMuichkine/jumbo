@@ -41,6 +41,20 @@ export default defineConfig((config) => {
   return {
     build: {
       target: 'esnext',
+      chunkSizeWarningLimit: 1000,
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            // Create separate chunks for large modules
+            if (id.includes('node_modules')) {
+              // Split specific large node_modules into separate chunks
+              if (id.includes('@codemirror')) return 'vendor-codemirror';
+              if (id.includes('react')) return 'vendor-react';
+              return 'vendor'; // Other node_modules
+            }
+          }
+        }
+      }
     },
     css: {
       preprocessorOptions: {
@@ -74,6 +88,7 @@ export default defineConfig((config) => {
           v3_relativeSplatPath: true,
           v3_throwAbortReason: true,
         },
+        serverModuleFormat: 'cjs',
       }),
       UnoCSS(),
       config.mode === 'production' && optimizeCssModules({ apply: 'build' }),

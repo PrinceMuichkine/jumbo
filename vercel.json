@@ -1,10 +1,14 @@
 {
   "version": 2,
-  "framework": "remix",
   "buildCommand": "pnpm run build",
   "installCommand": "pnpm install",
-  "devCommand": "pnpm run dev",
-  "outputDirectory": "build",
+  "framework": null,
+  "functions": {
+    "api/index.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",
@@ -30,6 +34,29 @@
           "value": "camera=(), microphone=(), geolocation=()"
         }
       ]
+    },
+    {
+      "source": "/(assets|build|_static)/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(assets|build|_static)/(.*)",
+      "dest": "/build/client/$1/$2"
+    },
+    {
+      "src": "/build/(.*)",
+      "dest": "/build/client/build/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.js"
     }
   ]
 }

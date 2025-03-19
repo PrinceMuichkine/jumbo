@@ -84,9 +84,11 @@
   "devDependencies": {
     "@blitz/eslint-plugin": "0.1.0",
     "@remix-run/dev": "^2.16.2",
+    "@remix-run/vercel": "^1.19.3",
     "@types/diff": "^5.2.3",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
+    "@vercel/node": "^5.1.14",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-refresh": "^0.4.19",
     "fast-glob": "^3.3.3",
