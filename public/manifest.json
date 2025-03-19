@@ -1,11 +1,11 @@
 {
-  "name": "Jumbo.dev by lomi. | AI-Powered Full-Stack Web Development",
-  "short_name": "Jumbo.dev",
+  "name": "Jumbo by lomi. | AI-Powered Full-Stack Web Development",
+  "short_name": "Jumbo",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
-  "description": "Build and deploy full-stack web apps in your browser with Jumbo.dev. Use AI to create, design and ship code in minutes.",
+  "description": "Build and deploy full-stack web apps in your browser with Jumbo. Use AI to create, design and ship code in minutes.",
   "icons": [
     {
       "src": "/social_preview.jpg",
@@ -60,12 +60,12 @@
     {
       "name": "Templates",
       "url": "/templates",
-      "description": "Browse Jumbo.dev templates"
+      "description": "Browse Jumbo templates"
     },
     {
       "name": "Documentation",
       "url": "/docs",
-      "description": "View Jumbo.dev documentation"
+      "description": "View Jumbo documentation"
     }
   ],
   "related_applications": [
@@ -81,7 +81,7 @@
       "sizes": "1280x720",
       "type": "image/jpeg",
       "platform": "wide",
-      "label": "Jumbo.dev Dashboard"
+      "label": "Jumbo Dashboard"
     }
   ],
   "lang": "en",
@@ -90,9 +90,9 @@
   "iarc_rating_id": "",
   "locales": {
     "fr": {
-      "name": "Jumbo.dev | Développement Web Full-Stack augmenté par l'IA",
-      "short_name": "Jumbo.dev",
-      "description": "Créez et déployez des applications en quelques minutes avec Jumbo.dev."
+      "name": "Jumbo | Développement Web Full-Stack augmenté par l'IA",
+      "short_name": "Jumbo",
+      "description": "Créez et déployez des applications en quelques minutes avec Jumbo."
     }
   }
 }

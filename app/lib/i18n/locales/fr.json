@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "description": "Discutez et créez des applications avec Jumbo, un agent IA full-stack de lomi."
+  },
+  "header": {
+    "sign_in": "Connexion",
+    "sign_out": "Déconnexion"
+  },
+  "chat": {
+    "placeholder": "Demandez n'importe quoi à Jumbo...",
+    "loading": "Chargement...",
+    "new_chat": "Nouvelle conversation",
+    "token_usage": "Utilisation de jetons: {{count}}"
+  },
+  "settings": {
+    "general": "Général",
+    "tokens": "Jetons",
+    "applications": "Applications",
+    "knowledge": "Connaissances",
+    "delete_all_chats": "Supprimer toutes les conversations",
+    "show_token_usage": "Afficher l'utilisation des jetons dans le chat",
+    "delete_all": "Tout supprimer",
+    "tokens_per_day": "Par jour",
+    "tokens_per_month": "Par mois",
+    "tokens_from_referrals": "Jetons obtenus par parrainage",
+    "upgrade_for_more": "Passez à la version Pro pour plus de tokens",
+    "connect": "Connecter",
+    "archive": "Archiver"
+  },
+  "referral": {
+    "title": "Obtenez des crédits gratuits",
+    "description": "Partagez votre lien de parrainage et obtenez des crédits gratuits lorsque vos amis s'inscrivent.",
+    "your_link": "Votre lien de parrainage",
+    "copy": "Copier",
+    "share_twitter": "Partager sur Twitter"
+  },
+  "subscription": {
+    "title": "Mon abonnement",
+    "current_plan": "Plan actuel",
+    "free_plan": "Gratuit",
+    "free_description": "Vous utilisez actuellement le plan Gratuit avec 150 000 tokens par jour.",
+    "upgrade_title": "Passer à Pro",
+    "upgrade_description": "Obtenez 1 000 000 de tokens par mois, un support prioritaire et plus encore.",
+    "price": "9,99€/mois",
+    "upgrade_button": "Mettre à niveau"
+  },
+  "footer": {
+    "copyright": "Copyright © 2025 — Jumbo by lomi.",
+    "blog": "Blog",
+    "faq": "FAQ",
+    "privacy": "Confidentialité",
+    "terms": "Conditions",
+    "recommend": "Laissez-nous un avis"
+  },
+  "feedback_form": {
+    "button": "Feedback",
+    "placeholder": "Dites-nous ce que vous en pensez...",
+    "submit": "Envoyer",
+    "thanks": "Merci pour votre retour!",
+    "error": "Échec de l'envoi du commentaire. Veuillez réessayer plus tard."
+  }
+}

@@ -166,6 +166,10 @@ export function SignUp({ onSwitchToSignIn }: SignUpProps) {
           showLinks={false}
           providers={['github', 'google']}
           onlyThirdPartyProviders={true}
+          queryParams={{
+            access_type: 'offline',
+            prompt: 'consent',
+          }}
         />
 
         {onSwitchToSignIn && (

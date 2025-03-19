@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "description": "Chat and build apps with Jumbo, a full-stack AI agent from lomi."
+  },
+  "header": {
+    "sign_in": "Sign In",
+    "sign_out": "Sign Out"
+  },
+  "chat": {
+    "placeholder": "Ask Jumbo anything...",
+    "loading": "Loading...",
+    "new_chat": "New Chat",
+    "token_usage": "Token usage: {{count}}"
+  },
+  "settings": {
+    "general": "General",
+    "tokens": "Tokens",
+    "applications": "Applications",
+    "knowledge": "Knowledge",
+    "delete_all_chats": "Delete all chats",
+    "show_token_usage": "Show token usage in chat",
+    "delete_all": "Delete all",
+    "tokens_per_day": "Per day",
+    "tokens_per_month": "Per month",
+    "tokens_from_referrals": "Tokens obtained through referrals",
+    "upgrade_for_more": "Upgrade for more tokens",
+    "connect": "Connect",
+    "archive": "Archive"
+  },
+  "referral": {
+    "title": "Get Free Credits",
+    "description": "Share your referral link and get free credits when friends sign up.",
+    "your_link": "Your referral link",
+    "copy": "Copy",
+    "share_twitter": "Share on Twitter"
+  },
+  "subscription": {
+    "title": "My Subscription",
+    "current_plan": "Current Plan",
+    "free_plan": "Free",
+    "free_description": "You are currently on the Free plan with 150,000 tokens per day.",
+    "upgrade_title": "Upgrade to Pro",
+    "upgrade_description": "Get 1,000,000 tokens per month, priority support, and more.",
+    "price": "$9.99/month",
+    "upgrade_button": "Upgrade"
+  },
+  "footer": {
+    "copyright": "Copyright © 2025 — Jumbo by lomi.",
+    "blog": "Blog",
+    "faq": "FAQ",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "recommend": "Recommend us"
+  },
+  "feedback_form": {
+    "button": "Feedback",
+    "placeholder": "Tell us what you think...",
+    "submit": "Send",
+    "thanks": "Thank you for your feedback!",
+    "error": "Failed to submit feedback. Please try again later."
+  }
+}

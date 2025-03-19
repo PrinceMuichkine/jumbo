@@ -73,7 +73,7 @@ export function SignIn({ onSwitchToSignUp }: SignInProps) {
               onChange={(e) => setEmail(e.target.value)}
               required
               className="w-full h-[42px] px-3 rounded-md border border-jumbo-elements-borderColor bg-white dark:bg-gray-800 text-jumbo-elements-textPrimary focus:outline-none focus:ring-1 focus:ring-jumbo-elements-button-primary-text"
-              placeholder="your@email.com"
+              placeholder="your@email.com**"
             />
           </div>
           {error && (
@@ -146,6 +146,10 @@ export function SignIn({ onSwitchToSignUp }: SignInProps) {
           showLinks={false}
           providers={['github', 'google']}
           onlyThirdPartyProviders={true}
+          queryParams={{
+            access_type: 'offline',
+            prompt: 'consent',
+          }}
         />
 
         {onSwitchToSignUp && (

@@ -7,9 +7,11 @@ import { themeStore } from './lib/stores/theme';
 import { stripIndents } from './utils/stripIndent';
 import { createHead } from 'remix-island';
 import { useEffect } from 'react';
-import { createSupabaseServerClient } from './lib/supabase/server';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { supabase } from './lib/supabase/client';
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
+import { TranslationProvider } from '@/lib/contexts/TranslationContext';
+import { UserProvider, SIGNIN_EVENT } from '@/lib/contexts/UserContext';
 
 import reactToastifyStyles from 'react-toastify/dist/ReactToastify.css?url';
 import globalStyles from './styles/index.scss?url';
@@ -66,26 +68,21 @@ export const Head = createHead(() => (
   </>
 ));
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const loader = async ({ request, context }: LoaderFunctionArgs) => {
   const response = new Response();
-
-  // Create a Supabase client for the server
   const supabase = createSupabaseServerClient({ request, response });
-
-  // Get the session from Supabase
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+  const authenticatedUser = userError ? null : userData?.user;
   const { data: { session } } = await supabase.auth.getSession();
+  const accessToken = session?.access_token || null;
 
-  /**
-   * Pass environment variables to the client
-   * We need to pass VITE_ prefixed variables for client-side code
-   */
   const env = {
     SUPABASE_URL: process.env.VITE_SUPABASE_URL || '',
     SUPABASE_ANON_KEY: process.env.VITE_SUPABASE_ANON_KEY || '',
   };
 
   return json(
-    { env, session },
+    { env, access_token: accessToken, user: authenticatedUser },
     { headers: response.headers }
   );
 };
@@ -106,36 +103,122 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+// Default export is a single React component - this is crucial for Fast Refresh
 export default function App() {
-  const { session } = useLoaderData<typeof loader>();
+  const { access_token, env, user } = useLoaderData<typeof loader>();
   const { revalidate } = useRevalidator();
 
+  // Handle auth callback success
   useEffect(() => {
-    // We need to check if we're in the browser
-    if (typeof window === 'undefined') {
-      return;
-    }
+    const handleAuthCallback = () => {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const authSuccess = params.get('auth_success');
+        const userId = params.get('userId');
+        const userMetadataParam = params.get('userMetadata');
 
-    const serverAccessToken = session?.access_token;
+        if (authSuccess === 'true' && userId) {
+          const url = new URL(window.location.href);
+          url.searchParams.delete('auth_success');
+          url.searchParams.delete('userId');
+          url.searchParams.delete('userMetadata');
+          url.searchParams.delete('force_reload');
+          window.history.replaceState({}, '', url.toString());
 
-    // Use the pre-initialized supabase instance from client.ts
+          try {
+            // Parse the user metadata if available
+            let userMetadata = undefined;
+            if (userMetadataParam) {
+              try {
+                userMetadata = JSON.parse(decodeURIComponent(userMetadataParam));
+
+                // Ensure avatar_url is available for Google auth
+                if (userMetadata.provider === 'google' && userMetadata.picture && !userMetadata.avatar_url) {
+                  userMetadata.avatar_url = userMetadata.picture;
+                }
+              } catch (parseError) {
+                console.error('Error parsing user metadata:', parseError);
+              }
+            }
+
+            const signInEvent = new CustomEvent(SIGNIN_EVENT, {
+              detail: {
+                user: {
+                  id: userId,
+                  user_metadata: userMetadata
+                }
+              }
+            });
+            window.dispatchEvent(signInEvent);
+            revalidate();
+          } catch (error) {
+            console.error('Error dispatching sign-in event:', error);
+          }
+        }
+      } catch (error) {
+        console.error('Error handling auth callback:', error);
+      }
+    };
+
+    handleAuthCallback();
+  }, [revalidate]);
+
+  // Monitor auth state changes
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const serverAccessToken = access_token;
+    let isRevalidating = false;
+
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
-      if (session?.access_token !== serverAccessToken) {
-        // Server and client are out of sync - revalidate
-        revalidate();
+    } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, newSession: Session | null) => {
+      if (newSession?.access_token !== serverAccessToken && !isRevalidating) {
+        isRevalidating = true;
+
+        if (event === 'SIGNED_IN') {
+          revalidate();
+          isRevalidating = false;
+          return;
+        }
+
+        setTimeout(() => {
+          revalidate();
+          isRevalidating = false;
+        }, 10);
+      }
+
+      if (event === 'SIGNED_OUT') return;
+
+      try {
+        await supabase.auth.getUser();
+      } catch (error) {
+        console.error('Error verifying user after state change:', error);
       }
     });
 
-    // eslint-disable-next-line consistent-return
     return () => {
       subscription.unsubscribe();
     };
-  }, [session?.access_token, revalidate]);
+  }, [access_token, revalidate]);
 
-  // Simply provide the already-initialized supabase client
+  // Set up theme preference on initial load
+  useEffect(() => {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const savedTheme = localStorage.getItem('jumbo.settings.theme');
+
+    if (savedTheme) {
+      document.documentElement.classList.toggle('dark', savedTheme === 'dark');
+    } else if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    }
+  }, []);
+
   return (
-    <Outlet context={{ supabase }} />
+    <TranslationProvider>
+      <UserProvider>
+        <Outlet context={{ supabase, user }} />
+      </UserProvider>
+    </TranslationProvider>
   );
 }

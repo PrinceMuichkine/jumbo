@@ -11,4 +11,28 @@ html,
 body {
   height: 100%;
   width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  position: fixed;
+}
+
+:root {
+  --app-height: 100vh;
+}
+
+#root {
+  height: 100vh;
+  height: var(--app-height);
+  overflow: hidden;
+}
+
+/* Ensure the page is truly fixed and static */
+.static-layout {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
 }

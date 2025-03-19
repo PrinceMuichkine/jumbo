@@ -4,18 +4,32 @@ import type { Database } from '@/lib/types/database.types';
 // Safely check if we're in a browser environment
 const isBrowser = typeof window !== 'undefined';
 
-// Debug environment variables (will only run in browser)
+// Remove debug logging in production to improve performance
 if (isBrowser && import.meta.env.DEV) {
   console.log('VITE_SUPABASE_URL:', import.meta.env.VITE_SUPABASE_URL);
   console.log('VITE_SUPABASE_ANON_KEY:', import.meta.env.VITE_SUPABASE_ANON_KEY ? 'is defined' : 'is not defined');
 }
+
+// Cache the Supabase client instance to prevent multiple initializations
+let supabaseClientInstance: ReturnType<typeof createBrowserClient<Database>> | null = null;
 
 // Create a method that can be used during client-side rendering
 export const createSupabaseBrowserClient = (
   supabaseUrl: string = import.meta.env.VITE_SUPABASE_URL as string,
   supabaseKey: string = import.meta.env.VITE_SUPABASE_ANON_KEY as string
 ) => {
-  return createBrowserClient<Database>(supabaseUrl, supabaseKey);
+  if (isBrowser && supabaseClientInstance) {
+    return supabaseClientInstance;
+  }
+
+  // Create client with default options
+  const client = createBrowserClient<Database>(supabaseUrl, supabaseKey);
+
+  if (isBrowser) {
+    supabaseClientInstance = client;
+  }
+
+  return client;
 };
 
 /**
@@ -57,8 +71,7 @@ const dummyClient = {
  * Export a client that will be used during SSR but replaced client-side
  */
 export const supabase = isBrowser
-  ? createBrowserClient<Database>(
-
+  ? createSupabaseBrowserClient(
       /**
        * During CSR we access environment variables via import.meta.env in Vite
        */
