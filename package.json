@@ -9,7 +9,7 @@
   "scripts": {
     "deploy": "bun run build && wrangler pages deploy",
     "build": "remix vite:build",
-    "vercel-build": "pnpm install --no-frozen-lockfile && remix vite:build --no-sourcemap",
+    "vercel-build": "NODE_ENV=production SKIP_WORKERD_POSTINSTALL=1 pnpm install --no-frozen-lockfile && remix vite:build --no-sourcemap",
     "dev": "remix vite:dev",
     "test": "vitest --run",
     "test:watch": "vitest",
@@ -116,6 +116,12 @@
     "zod": "^3.24.2"
   },
   "resolutions": {
-    "@typescript-eslint/utils": "^8.0.0-alpha.30"
+    "@typescript-eslint/utils": "^8.0.0-alpha.30",
+    "workerd": "npm:@vercel/workerd@^1.0.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "workerd": "npm:@vercel/workerd@^1.0.0"
+    }
   }
 }
