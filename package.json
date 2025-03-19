@@ -8,8 +8,7 @@
   "type": "module",
   "scripts": {
     "deploy": "bun run build && wrangler pages deploy",
-    "build": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" MINIFLARE_DISABLE_VM=1 MINIFLARE_SUPRESS_ERRORS=1 remix vite:build",
-    "vercel-build": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" MINIFLARE_DISABLE_VM=1 remix vite:build || (echo 'Build failed, but continuing' && mkdir -p build/client)",
+    "build": "remix vite:build",
     "dev": "remix vite:dev",
     "test": "vitest --run",
     "test:watch": "vitest",
@@ -96,7 +95,6 @@
     "@types/react-dom": "^18.3.5",
     "@typescript-eslint/eslint-plugin": "^8.26.1",
     "@typescript-eslint/parser": "^8.26.1",
-    "cross-env": "^7.0.3",
     "eslint": "^9.22.0",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-refresh": "^0.4.19",
@@ -117,11 +115,6 @@
     "zod": "^3.24.2"
   },
   "resolutions": {
-    "@typescript-eslint/utils": "^8.0.0-alpha.30",
-    "miniflare": "3.20250310.1",
-    "@remix-run/dev": "2.16.1",
-    "@remix-run/server-runtime": "2.16.1",
-    "@remix-run/node": "2.16.1",
-    "@vercel/remix": "2.16.1"
+    "@typescript-eslint/utils": "^8.0.0-alpha.30"
   }
 }
