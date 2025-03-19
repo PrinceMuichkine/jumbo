@@ -194,6 +194,9 @@ importers:
       remix-utils:
         specifier: ^7.7.0
         version: 7.7.0(@remix-run/node@2.16.2(typescript@5.8.2))(@remix-run/react@2.16.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.2))(@remix-run/router@1.23.0)(react@18.3.1)(zod@3.24.2)
+      server-build:
+        specifier: link:@remix-run/dev/server-build
+        version: link:@remix-run/dev/server-build
       shiki:
         specifier: ^1.29.2
         version: 1.29.2

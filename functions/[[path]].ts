@@ -14,12 +14,12 @@ async function handleRequest(request: Request) {
   const newHeaders = new Headers(request.headers);
 
   // Add Supabase environment variables to headers for server-side access
-  if (process.env.VITE_SUPABASE_URL) {
-    newHeaders.set('X-Supabase-URL', process.env.VITE_SUPABASE_URL);
+  if (process.env.SUPABASE_URL) {
+    newHeaders.set('X-Supabase-URL', process.env.SUPABASE_URL);
   }
 
-  if (process.env.VITE_SUPABASE_ANON_KEY) {
-    newHeaders.set('X-Supabase-Anon-Key', process.env.VITE_SUPABASE_ANON_KEY);
+  if (process.env.SUPABASE_ANON_KEY) {
+    newHeaders.set('X-Supabase-Anon-Key', process.env.SUPABASE_ANON_KEY);
   }
 
   const enhancedRequest = new Request(request.url, {

@@ -84,6 +84,7 @@
     "remark-gfm": "^4.0.1",
     "remix-island": "^0.2.0",
     "remix-utils": "^7.7.0",
+    "server-build": "link:@remix-run/dev/server-build",
     "shiki": "^1.29.2",
     "tailwind-merge": "^3.0.2",
     "unist-util-visit": "^5.0.0"
