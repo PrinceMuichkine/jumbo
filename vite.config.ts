@@ -54,6 +54,11 @@ export default defineConfig((config) => {
             }
           }
         }
+      },
+      // Fix duplicate React when using CJS output for server
+      commonjsOptions: {
+        transformMixedEsModules: true,
+        include: [/node_modules/]
       }
     },
     css: {
