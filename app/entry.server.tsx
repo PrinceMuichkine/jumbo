@@ -1,7 +1,8 @@
-import type { EntryContext } from '@remix-run/cloudflare';
+import type { EntryContext } from '@remix-run/node';
 import { RemixServer } from '@remix-run/react';
 import { isbot } from 'isbot';
-import { renderToReadableStream } from 'react-dom/server';
+import pkg from 'react-dom/server';
+const { renderToString } = pkg;
 import { renderHeadToString } from 'remix-island';
 import { Head } from './root';
 import { themeStore } from '@/lib/stores/theme';
@@ -12,66 +13,38 @@ export default async function handleRequest(
   responseHeaders: Headers,
   remixContext: EntryContext,
 ) {
-  const readable = await renderToReadableStream(<RemixServer context={remixContext} url={request.url} />, {
-    signal: request.signal,
-    onError(error: unknown) {
-      console.error(error);
-      responseStatusCode = 500;
-    },
-  });
+  const enhancedContext = { ...remixContext, isSpaMode: false };
 
-  const body = new ReadableStream({
-    start(controller) {
-      const head = renderHeadToString({ request, remixContext, Head });
+  try {
+    // Use renderToString instead of renderToReadableStream for simplicity
+    const markup = renderToString(
+      <RemixServer context={enhancedContext} url={request.url} />
+    );
 
-      controller.enqueue(
-        new Uint8Array(
-          new TextEncoder().encode(
-            `<!DOCTYPE html><html lang="en" data-theme="${themeStore.value}"><head>${head}</head><body><div id="root" class="w-full h-full">`,
-          ),
-        ),
-      );
+    const head = renderHeadToString({ request, remixContext: enhancedContext, Head });
 
-      const reader = readable.getReader();
+    // Note: The HTML structure must exactly match what the client expects for hydration
+    const html = `<!DOCTYPE html>
+<html lang="en" data-theme="${themeStore.value}">
+<head>${head}</head>
+<body>
+<div id="root" class="w-full h-full">${markup}</div>
+</body>
+</html>`;
 
-      function read() {
-        reader
-          .read()
-          .then(({ done, value }) => {
-            if (done) {
-              controller.enqueue(new Uint8Array(new TextEncoder().encode(`</div></body></html>`)));
-              controller.close();
+    responseHeaders.set('Content-Type', 'text/html');
+    responseHeaders.set('Cross-Origin-Embedder-Policy', 'require-corp');
+    responseHeaders.set('Cross-Origin-Opener-Policy', 'same-origin');
 
-              return;
-            }
-
-            controller.enqueue(value);
-            read();
-          })
-          .catch((error) => {
-            controller.error(error);
-            readable.cancel();
-          });
-      }
-      read();
-    },
-
-    cancel() {
-      readable.cancel();
-    },
-  });
-
-  if (isbot(request.headers.get('user-agent') || '')) {
-    await readable.allReady;
+    return new Response(html, {
+      status: responseStatusCode,
+      headers: responseHeaders,
+    });
+  } catch (error) {
+    console.error(error);
+    return new Response("Internal Server Error", {
+      status: 500,
+      headers: { "Content-Type": "text/plain" }
+    });
   }
-
-  responseHeaders.set('Content-Type', 'text/html');
-
-  responseHeaders.set('Cross-Origin-Embedder-Policy', 'require-corp');
-  responseHeaders.set('Cross-Origin-Opener-Policy', 'same-origin');
-
-  return new Response(body, {
-    headers: responseHeaders,
-    status: responseStatusCode,
-  });
 }

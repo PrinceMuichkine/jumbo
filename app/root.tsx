@@ -1,10 +1,10 @@
 import { useStore } from '@nanostores/react';
-import type { LinksFunction, LoaderFunctionArgs } from '@remix-run/cloudflare';
-import { json } from '@remix-run/cloudflare';
+import type { LinksFunction, LoaderFunctionArgs } from '@remix-run/node';
+import { json } from '@remix-run/node';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData, useRevalidator } from '@remix-run/react';
 import tailwindReset from '@unocss/reset/tailwind-compat.css?url';
 import { themeStore } from './lib/stores/theme';
-import { stripIndents } from './utils/stripIndent';
+import { stripIndents } from '@/utils/stripIndent';
 import { createHead } from 'remix-island';
 import { useEffect } from 'react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';

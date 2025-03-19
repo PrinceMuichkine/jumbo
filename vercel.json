@@ -1,0 +1,9 @@
+{
+  "buildCommand": "pnpm run build",
+  "framework": "remix",
+  "installCommand": "pnpm install",
+  "devCommand": "pnpm run dev",
+  "nodeVersion": "18.x",
+  "ignoreCommand": "exit 0",
+  "outputDirectory": "build"
+}

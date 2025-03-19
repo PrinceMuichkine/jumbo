@@ -32,13 +32,13 @@ async function chatAction({ request }: ActionFunctionArgs) {
         messages.push({ role: 'assistant', content });
         messages.push({ role: 'user', content: CONTINUE_PROMPT });
 
-        const result = await streamText(messages, options);
+        const result = await streamText(messages, undefined, options);
 
         return stream.switchSource(result.toAIStream());
       },
     };
 
-    const result = await streamText(messages, options);
+    const result = await streamText(messages, undefined, options);
 
     stream.switchSource(result.toAIStream());
 

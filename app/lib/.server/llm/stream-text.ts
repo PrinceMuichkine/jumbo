@@ -9,6 +9,7 @@ interface ToolResult<Name extends string, Args, Result> {
   toolName: Name;
   args: Args;
   result: Result;
+  state: 'result';
 }
 
 interface Message {
@@ -21,9 +22,16 @@ export type Messages = Message[];
 
 export type StreamingOptions = Omit<Parameters<typeof _streamText>[0], 'model'>;
 
-export function streamText(messages: Messages, env: Env, options?: StreamingOptions) {
+export interface Env {
+  ANTHROPIC_API_KEY?: string;
+}
+
+export function streamText(messages: Messages, env?: Env, options?: StreamingOptions) {
+  // Get API key from env parameter or use process.env
+  const apiKey = env?.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY;
+
   return _streamText({
-    model: getAnthropicModel(getAPIKey(env)),
+    model: getAnthropicModel(apiKey ? { ANTHROPIC_API_KEY: apiKey } : undefined),
     system: getSystemPrompt(),
     maxTokens: MAX_TOKENS,
     headers: {
