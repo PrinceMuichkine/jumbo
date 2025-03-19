@@ -13,7 +13,4 @@ export default {
   // Vercel will handle these aspects
   serverMinify: true,
   serverModuleFormat: "esm",
-
-  // The following options are not needed with Vercel
-  // serverBuildPath and server are automatically handled
 };

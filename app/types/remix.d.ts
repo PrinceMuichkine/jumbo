@@ -40,9 +40,6 @@ declare module '@remix-run/node' {
 }
 
 // Type declaration to make TypeScript happy with missing types during build
-declare module '@remix-run/vercel' {
-  export * from '@remix-run/node';
-}
 
 // Fix for CSS and SCSS imports
 declare module '*.css' {

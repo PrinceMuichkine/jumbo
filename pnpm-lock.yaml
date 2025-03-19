@@ -219,9 +219,6 @@ importers:
       '@types/react-dom':
         specifier: ^18.3.5
         version: 18.3.5(@types/react@18.3.19)
-      '@vercel/node':
-        specifier: ^5.1.14
-        version: 5.1.14(rollup@4.36.0)
       eslint-plugin-react:
         specifier: ^7.37.4
         version: 7.37.4(eslint@9.22.0(jiti@1.21.7))
@@ -2223,9 +2220,6 @@ packages:
     resolution: {integrity: sha512-zbaF9Wp/NsZtKLE4uVmL3FyfFwlpDyuymQM1kPbeT0mVOHKDQQNjnnfslB3REg3oZprmNFJuh3pkHBk2qAaizg==}
     engines: {node: '>=16'}
     hasBin: true
-
-  '@vercel/node@5.1.14':
-    resolution: {integrity: sha512-kLXAR4ZtNSXJw5ffIzKPDAVHD4/Dwxw/287ZCnQlqtOQzY3IH1E5QM3nxn0LGfTkYxXpQFFOOcXL7fZW7MjC6A==}
 
   '@vercel/remix@2.15.3':
     resolution: {integrity: sha512-t6dh8j93CnlE/sd/hnutsMKYoogGmYbm+pkykJ/i6mWmEs2dqJMOhaV5axS3bVD1N+5ltyTR1vgk+D0y9tp9Og==}
@@ -8543,36 +8537,6 @@ snapshots:
       picomatch: 4.0.2
       resolve-from: 5.0.0
     transitivePeerDependencies:
-      - encoding
-      - rollup
-      - supports-color
-
-  '@vercel/node@5.1.14(rollup@4.36.0)':
-    dependencies:
-      '@edge-runtime/node-utils': 2.3.0
-      '@edge-runtime/primitives': 4.1.0
-      '@edge-runtime/vm': 3.2.0
-      '@types/node': 16.18.11
-      '@vercel/build-utils': 10.5.1
-      '@vercel/error-utils': 2.0.3
-      '@vercel/nft': 0.27.10(rollup@4.36.0)
-      '@vercel/static-config': 3.0.0
-      async-listen: 3.0.0
-      cjs-module-lexer: 1.2.3
-      edge-runtime: 2.5.9
-      es-module-lexer: 1.4.1
-      esbuild: 0.14.47
-      etag: 1.8.1
-      node-fetch: 2.6.9
-      path-to-regexp: 6.1.0
-      path-to-regexp-updated: path-to-regexp@6.3.0
-      ts-morph: 12.0.0
-      ts-node: 10.9.1(@types/node@16.18.11)(typescript@4.9.5)
-      typescript: 4.9.5
-      undici: 5.28.4
-    transitivePeerDependencies:
-      - '@swc/core'
-      - '@swc/wasm'
       - encoding
       - rollup
       - supports-color
