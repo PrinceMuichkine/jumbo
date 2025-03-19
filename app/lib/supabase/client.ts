@@ -1,5 +1,6 @@
 import { createBrowserClient } from '@supabase/auth-helpers-remix';
 import type { Database } from '@/lib/types/database.types';
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 
 // Safely check if we're in a browser environment
 const isBrowser = typeof window !== 'undefined';
@@ -43,19 +44,24 @@ export const createSupabaseBrowserClient = (
   }
 
   try {
-    // Create client with default options
+    // Create client with minimal required options
     const client = createBrowserClient<Database>(supabaseUrl, supabaseKey, {
-      // @ts-ignore - The types seem to be incorrect, but these options are valid
-      auth: {
-        flowType: 'pkce',
-        detectSessionInUrl: isBrowser,
-        persistSession: true,
-        autoRefreshToken: true,
-      },
+      cookieOptions: {
+        name: 'sb-auth',
+        path: '/',
+        sameSite: 'lax'
+      }
     });
 
     if (isBrowser) {
       supabaseClientInstance = client;
+
+      // Simple debug logging for auth state changes in development
+      if (process.env.NODE_ENV === 'development') {
+        client.auth.onAuthStateChange(function(event: AuthChangeEvent, session: Session | null) {
+          console.log('Auth event:', event, session ? 'with session' : 'no session');
+        });
+      }
     }
 
     return client;
