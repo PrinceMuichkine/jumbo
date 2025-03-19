@@ -16,6 +16,7 @@
     "lint:fix": "bun lint -- --fix",
     "update:types": "bunx supabase gen types typescript --project-id adfpiwoqpqaruyxumzzo > app/lib/types/database.types.ts",
     "typecheck": "tsc",
+    "start": "NODE_ENV=production node server.js",
     "preview": "pnpm run build && pnpm run start"
   },
   "engines": {
@@ -44,6 +45,7 @@
     "@nanostores/react": "^0.7.3",
     "@radix-ui/react-dialog": "^1.1.6",
     "@radix-ui/react-dropdown-menu": "^2.1.6",
+    "@remix-run/express": "^2.16.2",
     "@remix-run/node": "^2.16.2",
     "@remix-run/react": "^2.16.2",
     "@supabase/auth-helpers-remix": "^0.4.0",
@@ -61,6 +63,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "diff": "^5.2.0",
+    "dotenv": "^16.4.7",
     "framer-motion": "^11.18.2",
     "isbot": "^4.4.0",
     "istextorbinary": "^9.5.0",
@@ -92,6 +95,7 @@
     "@vercel/node": "^5.1.14",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-refresh": "^0.4.19",
+    "express": "^4.21.2",
     "fast-glob": "^3.3.3",
     "is-ci": "^3.0.1",
     "node-fetch": "^3.3.2",

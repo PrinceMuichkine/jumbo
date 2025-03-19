@@ -8,6 +8,9 @@ const ARTIFACT_TAG_CLOSE = '</jumboArtifact>';
 const ARTIFACT_ACTION_TAG_OPEN = '<jumboAction';
 const ARTIFACT_ACTION_TAG_CLOSE = '</jumboAction>';
 
+// Special partial tags that should be handled
+const SPECIAL_PARTIAL_TAGS = ['<b', '<bol', '<jumbo', '<jumboA'];
+
 const logger = createScopedLogger('MessageParser');
 
 export interface ArtifactCallbackData extends JumboArtifactData {
@@ -158,19 +161,25 @@ export class StreamingMessageParser {
         let j = i;
         let potentialTag = '';
 
-        while (j < input.length && potentialTag.length < ARTIFACT_TAG_OPEN.length) {
-          potentialTag += input[j];
+        // Check if we have enough characters to potentially have a complete tag
+        if (i + ARTIFACT_TAG_OPEN.length <= input.length) {
+          while (j < input.length && potentialTag.length < ARTIFACT_TAG_OPEN.length) {
+            potentialTag += input[j];
+            j++;
+          }
 
+          // If we have a complete jumboArtifact tag opening
           if (potentialTag === ARTIFACT_TAG_OPEN) {
-            const nextChar = input[j + 1];
+            const nextChar = input[j];
 
             if (nextChar && nextChar !== '>' && nextChar !== ' ') {
-              output += input.slice(i, j + 1);
-              i = j + 1;
-              break;
+              // Not a valid tag opening (e.g., "<jumboArtifacts")
+              output += input.slice(i, j);
+              i = j;
+              continue;
             }
 
-            const openTagEnd = input.indexOf('>', j);
+            const openTagEnd = input.indexOf('>', j - 1);
 
             if (openTagEnd !== -1) {
               const artifactTag = input.slice(i, openTagEnd + 1);
@@ -202,30 +211,71 @@ export class StreamingMessageParser {
               output += artifactFactory({ messageId });
 
               i = openTagEnd + 1;
+              continue;
             } else {
+              // Incomplete tag
               earlyBreak = true;
+              break;
             }
-
-            break;
-          } else if (!ARTIFACT_TAG_OPEN.startsWith(potentialTag)) {
-            output += input.slice(i, j + 1);
-            i = j + 1;
-            break;
+          } else {
+            // Check if it's the start of a potential jumboArtifact tag but incomplete
+            if (ARTIFACT_TAG_OPEN.startsWith(potentialTag)) {
+              // This is a potential artifact tag start that's incomplete
+              // Let's break and wait for more data
+              earlyBreak = true;
+              break;
+            } else {
+              // If it's not a potential jumboArtifact tag, just add it to output
+              // Only add the opening < since we need to check character by character
+              output += input[i];
+              i++;
+              continue;
+            }
           }
+        } else {
+          // Not enough characters to form a complete artifact tag
+          // Check if what we have so far matches the start of the artifact tag
+          potentialTag = input.slice(i, input.length);
 
-          j++;
-        }
-
-        if (j === input.length && ARTIFACT_TAG_OPEN.startsWith(potentialTag)) {
-          break;
+          if (ARTIFACT_TAG_OPEN.startsWith(potentialTag)) {
+            // This looks like it could be the start of an artifact tag, but we need more characters
+            earlyBreak = true;
+            break;
+          } else {
+            // This is definitely not an artifact tag
+            output += input[i];
+            i++;
+            continue;
+          }
         }
       } else {
+        // Check for special partial tags that should be stripped
+        let isSpecialPartialTag = false;
+
+        for (const partialTag of SPECIAL_PARTIAL_TAGS) {
+          if (i + partialTag.length <= input.length) {
+            const potentialPartialTag = input.substring(i, i + partialTag.length);
+
+            if (potentialPartialTag === partialTag) {
+              // We found a special partial tag
+              const restOfInput = input.substring(i + partialTag.length);
+              // If it's at the end or not followed by a valid tag character, it's a partial tag
+              if (restOfInput.length === 0 || !/^[a-zA-Z0-9]/.test(restOfInput[0])) {
+                // Skip this partial tag entirely - don't include it in output
+                i += partialTag.length;
+                isSpecialPartialTag = true;
+                break;
+              }
+            }
+          }
+        }
+
+        if (isSpecialPartialTag) {
+          continue;
+        }
+
         output += input[i];
         i++;
-      }
-
-      if (earlyBreak) {
-        break;
       }
     }
 
@@ -249,23 +299,40 @@ export class StreamingMessageParser {
     };
 
     if (actionType === 'file') {
-      const filePath = this.#extractAttribute(actionTag, 'filePath') as string;
+      const filePath = this.#extractAttribute(actionTag, 'filePath');
 
-      if (!filePath) {
-        logger.debug('File path not specified');
+      if (filePath) {
+        (actionAttributes as FileAction).filePath = filePath;
       }
-
-      (actionAttributes as FileAction).filePath = filePath;
-    } else if (actionType !== 'shell') {
-      logger.warn(`Unknown action type '${actionType}'`);
+    } else if (actionType === 'shell') {
+      // Shell action doesn't have any additional attributes beyond type
+    } else {
+      logger.warn(`Unknown action type: ${actionType}`);
     }
 
-    return actionAttributes as FileAction | ShellAction;
+    return actionAttributes;
   }
 
-  #extractAttribute(tag: string, attributeName: string): string | undefined {
-    const match = tag.match(new RegExp(`${attributeName}="([^"]*)"`, 'i'));
-    return match ? match[1] : undefined;
+  #extractAttribute(tag: string, attrName: string) {
+    // Find the attribute name in the tag
+    const nameIndex = tag.indexOf(` ${attrName}="`);
+
+    if (nameIndex === -1) {
+      return undefined;
+    }
+
+    // Find where the attribute value starts
+    const valueStartIndex = nameIndex + attrName.length + 3; // +3 for ' ="'
+
+    // Find where the attribute value ends
+    let valueEndIndex = tag.indexOf('"', valueStartIndex);
+
+    if (valueEndIndex === -1) {
+      return undefined;
+    }
+
+    // Extract attribute value
+    return tag.slice(valueStartIndex, valueEndIndex);
   }
 }
 

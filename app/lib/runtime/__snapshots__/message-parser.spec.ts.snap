@@ -115,7 +115,247 @@ exports[`StreamingMessageParser > valid artifacts without actions > should corre
 }
 `;
 
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactClose 2`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactClose 3`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactClose 4`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactClose 5`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactClose 6`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactClose 7`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactClose 8`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactClose 9`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactClose 10`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactClose 11`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactClose 12`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactClose 13`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactClose 14`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactClose 15`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactClose 16`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
 exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactOpen 1`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactOpen 2`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactOpen 3`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactOpen 4`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactOpen 5`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactOpen 6`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactOpen 7`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactOpen 8`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactOpen 9`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactOpen 10`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactOpen 11`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactOpen 12`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactOpen 13`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactOpen 14`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactOpen 15`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (0) > onArtifactOpen 16`] = `
 {
   "id": "artifact_1",
   "messageId": "message_1",
@@ -211,7 +451,103 @@ exports[`StreamingMessageParser > valid artifacts without actions > should corre
 }
 `;
 
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (6) > onArtifactClose 2`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (6) > onArtifactClose 3`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (6) > onArtifactClose 4`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (6) > onArtifactClose 5`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (6) > onArtifactClose 6`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (6) > onArtifactClose 7`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
 exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (6) > onArtifactOpen 1`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (6) > onArtifactOpen 2`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (6) > onArtifactOpen 3`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (6) > onArtifactOpen 4`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (6) > onArtifactOpen 5`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (6) > onArtifactOpen 6`] = `
+{
+  "id": "artifact_1",
+  "messageId": "message_1",
+  "title": "Some title",
+}
+`;
+
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out jumbo artifacts (6) > onArtifactOpen 7`] = `
 {
   "id": "artifact_1",
   "messageId": "message_1",
