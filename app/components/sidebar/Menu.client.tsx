@@ -44,7 +44,6 @@ export function Menu() {
   const [list, setList] = useState<ChatHistoryItem[]>([]);
   const [open, setOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState<DialogContent>(null);
-  const { supabase } = useOutletContext<SupabaseOutletContext>();
   const { user, loading, signOut } = useUser();
   const [localUser, setLocalUser] = useState<User | null>(user);
   const [localLoading, setLocalLoading] = useState(loading);
@@ -70,6 +69,7 @@ export function Menu() {
     // Handle sign-in events
     const handleSignInEvent = (event: Event) => {
       const customEvent = event as CustomEvent<{ user: User }>;
+
       if (customEvent.detail?.user) {
         setLocalUser(customEvent.detail.user);
         setLocalLoading(false);
@@ -159,6 +159,7 @@ export function Menu() {
 
       await signOut();
       clearTimeout(timeoutId);
+
       // signOut already redirects to home page
     } catch (error) {
       console.error('Error signing out:', error);
@@ -299,6 +300,7 @@ export function Menu() {
                 </motion.button>
               </>
             ) : localLoading ? (
+
               // Show loading state
               <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-10 rounded-md mb-2"></div>
             ) : (
@@ -350,6 +352,7 @@ export function Menu() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
+
                     // Use our proxy route for Vercel avatar
                     <img
                       src={`/api/avatar/${encodeURIComponent(localUser.email?.toLowerCase() || '')}?rounded=true`}
@@ -385,14 +388,4 @@ export function Menu() {
       <SubscriptionModal open={showSubscriptionModal} onOpenChange={setShowSubscriptionModal} />
     </>
   );
-}
-
-function stringToColor(str: string): string {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-
-  const hue = Math.abs(hash) % 360;
-  return `hsl(${hue}, 70%, 50%)`;
 }

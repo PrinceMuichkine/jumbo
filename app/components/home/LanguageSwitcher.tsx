@@ -9,10 +9,10 @@ interface LanguageSwitcherProps {
   className?: string;
 }
 
-export const LanguageSwitcher = memo(function LanguageSwitcher({
+export const LanguageSwitcher = memo(({
   onLanguageChange,
   className = ''
-}: LanguageSwitcherProps) {
+}: LanguageSwitcherProps) => {
   const { currentLanguage, setLanguage } = useTranslation();
   const location = useLocation();
 
@@ -24,7 +24,7 @@ export const LanguageSwitcher = memo(function LanguageSwitcher({
     e.preventDefault();
     e.stopPropagation();
 
-    if (isPortalRoute) return;
+    if (isPortalRoute) {return;}
 
     const currentIndex = languages.findIndex(l => l.code === currentLanguage);
     const nextIndex = (currentIndex + 1) % languages.length;
@@ -41,7 +41,7 @@ export const LanguageSwitcher = memo(function LanguageSwitcher({
   }, [currentLanguage, isPortalRoute, onLanguageChange, setLanguage]);
 
   // Don't render the switcher in portal routes
-  if (isPortalRoute) return null;
+  if (isPortalRoute) {return null;}
 
   return (
     <button

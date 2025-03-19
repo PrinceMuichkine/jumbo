@@ -19,10 +19,12 @@ export const removeLocalStorageItem = (key: string) => {
 };
 
 export const clearAuthState = () => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') {return;}
 
-    // Only clear THE MOST essential auth-related keys for fastest possible performance
-    // These are the keys that absolutely must be cleared for sign-out to work
+    /*
+     * Only clear THE MOST essential auth-related keys for fastest possible performance
+     * These are the keys that absolutely must be cleared for sign-out to work
+     */
     const criticalKeys = [
         'sb-access-token',
         'supabase.auth.token'

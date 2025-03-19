@@ -55,7 +55,7 @@ const dummyClient = {
     getUser: () => Promise.resolve({ data: { user: null }, error: null }),
     getSession: () => Promise.resolve({ data: { session: null }, error: null }),
     onAuthStateChange: () => ({ data: { subscription: {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
+       
       unsubscribe: () => {}
     } } }),
     signOut: () => Promise.resolve({ error: null }),
@@ -72,6 +72,7 @@ const dummyClient = {
  */
 export const supabase = isBrowser
   ? createSupabaseBrowserClient(
+
       /**
        * During CSR we access environment variables via import.meta.env in Vite
        */

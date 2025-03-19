@@ -1,44 +1,11 @@
 import * as RadixDialog from '@radix-ui/react-dialog';
-import { motion, type Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
 import React, { memo, type ReactNode } from 'react';
 import { classNames } from '@/utils/classNames';
-import { cubicEasingFn } from '@/utils/easings';
 import { IconButton } from './IconButton';
+import { dialogBackdropVariants, dialogVariants } from './DialogConstants';
 
 export { Close as DialogClose, Root as DialogRoot } from '@radix-ui/react-dialog';
-
-const transition = {
-  duration: 0.15,
-  ease: cubicEasingFn,
-};
-
-export const dialogBackdropVariants = {
-  closed: {
-    opacity: 0,
-    transition,
-  },
-  open: {
-    opacity: 1,
-    transition,
-  },
-} satisfies Variants;
-
-export const dialogVariants = {
-  closed: {
-    x: '-50%',
-    y: '-40%',
-    scale: 0.96,
-    opacity: 0,
-    transition,
-  },
-  open: {
-    x: '-50%',
-    y: '-50%',
-    scale: 1,
-    opacity: 1,
-    transition,
-  },
-} satisfies Variants;
 
 interface DialogButtonProps {
   type: 'primary' | 'secondary' | 'danger';

@@ -5,7 +5,7 @@ import { classNames } from '@/utils/classNames';
 import { HeaderActionButtons } from './HeaderActionButtons.client';
 import { ChatDescription } from '@/lib/persistence/ChatDescription.client';
 import { useState, useEffect } from 'react';
-import type { User, AuthChangeEvent, Session } from '@supabase/supabase-js';
+import type { User } from '@supabase/supabase-js';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { motion } from 'framer-motion';
 import { useOutletContext } from '@remix-run/react';
@@ -40,6 +40,7 @@ export function Header() {
     // Handle sign-in events
     const handleSignInEvent = (event: Event) => {
       const customEvent = event as CustomEvent<{ user: User }>;
+
       if (customEvent.detail?.user) {
         setLocalUser(customEvent.detail.user);
         setLocalLoading(false);
@@ -136,6 +137,7 @@ export function Header() {
           <ClientOnly>
             {() => (
               localLoading ? (
+
                 // Show a loading state
                 <div className="w-[84px] h-[34px] bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse"></div>
               ) : (

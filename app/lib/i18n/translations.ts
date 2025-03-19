@@ -24,6 +24,7 @@ export const t = (lang: Language, key: string) => {
 
         // Try to fallback to English
         const enValue = getFallbackValue(keys, translations.en);
+
         if (enValue !== undefined) {
           return enValue;
         }

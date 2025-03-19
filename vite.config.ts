@@ -9,6 +9,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig((config) => {
   // Only use Vercel preset for production builds
   const presets = [];
+
   if (config.command === 'build') {
     presets.push(vercelPreset());
   }

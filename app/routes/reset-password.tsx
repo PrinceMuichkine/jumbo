@@ -21,6 +21,7 @@ export default function ResetPassword() {
         description: "Passwords don't match. Please try again.",
         variant: "destructive",
       });
+
       return;
     }
 
@@ -44,6 +45,7 @@ export default function ResetPassword() {
           description: "Your password has been reset successfully. You'll be redirected to login shortly.",
           variant: "success",
         });
+
         // Redirect after successful password reset
         setTimeout(() => {
           window.location.href = '/';

@@ -1,7 +1,6 @@
 import FeedbackForm from './feedback-form';
 import { XICON } from '@/components/icons/XIcon';
 import { GitHubIcon } from '@/components/icons/GitHubIcon';
-import { DiscordIcon } from '@/components/icons/DiscordIcon';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useTranslation } from '@/lib/contexts/TranslationContext';
 import { t } from '@/lib/i18n/translations';

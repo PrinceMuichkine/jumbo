@@ -1,6 +1,6 @@
 import { redirect } from '@remix-run/cloudflare';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { SIGNIN_EVENT } from '@/lib/contexts/UserContext';
+import { SIGNIN_EVENT } from '@/lib/contexts/UserEvents';
 import { toast } from '@/lib/hooks/use-toast';
 
 // Client-side component to trigger events after authentication
@@ -59,6 +59,7 @@ export function AuthSuccessHandler({ userId, userMetadata, authType }: {
   return null;
 }
 
+// Server loader that handles authentication callback
 export const loader = async ({ request }: { request: Request }) => {
   const response = new Response();
   const url = new URL(request.url);
@@ -109,6 +110,7 @@ export const loader = async ({ request }: { request: Request }) => {
 
       if (error) {
         console.error('Error exchanging code for session:', error);
+
         // Still redirect to home page, but with an error parameter
         toast({
           title: "Authentication failed",
@@ -151,6 +153,7 @@ export const loader = async ({ request }: { request: Request }) => {
       }
     } catch (error) {
       console.error('Error in auth callback:', error);
+
       // If there's an error, still redirect to home, with error parameter
       toast({
         title: "Authentication error",

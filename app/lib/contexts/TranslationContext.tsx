@@ -1,5 +1,3 @@
-'use client';
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { Language } from '@/lib/i18n/config';
 import { languages } from '@/lib/i18n/config';
@@ -15,6 +13,7 @@ const TranslationContext = createContext<TranslationContextType>({
   setLanguage: () => { },
 });
 
+// Main provider component
 export function TranslationProvider({ children }: { children: React.ReactNode }) {
   const [currentLanguage, setCurrentLanguage] = useState<Language>('en');
 
@@ -28,6 +27,7 @@ export function TranslationProvider({ children }: { children: React.ReactNode })
       // Try to detect browser language
       if (typeof navigator !== 'undefined') {
         const browserLang = navigator.language.split('-')[0];
+
         if (languages.some(lang => lang.code === browserLang)) {
           setCurrentLanguage(browserLang as Language);
         }
@@ -47,7 +47,8 @@ export function TranslationProvider({ children }: { children: React.ReactNode })
   );
 }
 
-export const useTranslation = () => {
+// Hook component
+export function useTranslation() {
   const context = useContext(TranslationContext);
 
   if (context === undefined) {
@@ -55,4 +56,4 @@ export const useTranslation = () => {
   }
 
   return context;
-};
+}

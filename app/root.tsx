@@ -11,7 +11,8 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { supabase } from './lib/supabase/client';
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 import { TranslationProvider } from '@/lib/contexts/TranslationContext';
-import { UserProvider, SIGNIN_EVENT } from '@/lib/contexts/UserContext';
+import { UserProvider } from '@/lib/contexts/UserContext';
+import { SIGNIN_EVENT } from '@/lib/contexts/UserEvents';
 
 import reactToastifyStyles from 'react-toastify/dist/ReactToastify.css?url';
 import globalStyles from './styles/index.scss?url';
@@ -105,7 +106,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 // Default export is a single React component - this is crucial for Fast Refresh
 export default function App() {
-  const { access_token, env, user } = useLoaderData<typeof loader>();
+  const { access_token, user } = useLoaderData<typeof loader>();
   const { revalidate } = useRevalidator();
 
   // Handle auth callback success
@@ -128,6 +129,7 @@ export default function App() {
           try {
             // Parse the user metadata if available
             let userMetadata = undefined;
+
             if (userMetadataParam) {
               try {
                 userMetadata = JSON.parse(decodeURIComponent(userMetadataParam));
@@ -165,7 +167,7 @@ export default function App() {
 
   // Monitor auth state changes
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') { return; }
 
     const serverAccessToken = access_token;
     let isRevalidating = false;
@@ -179,6 +181,7 @@ export default function App() {
         if (event === 'SIGNED_IN') {
           revalidate();
           isRevalidating = false;
+
           return;
         }
 
@@ -188,7 +191,7 @@ export default function App() {
         }, 10);
       }
 
-      if (event === 'SIGNED_OUT') return;
+      if (event === 'SIGNED_OUT') { return; }
 
       try {
         await supabase.auth.getUser();

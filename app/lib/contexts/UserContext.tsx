@@ -2,10 +2,7 @@ import { createContext, useContext, useEffect, useState, useCallback } from 'rea
 import type { Session, User, AuthChangeEvent } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase/client';
 import { clearAuthState } from '@/utils/localStorage';
-
-// Create custom events for auth state changes to ensure all components update immediately
-export const SIGNOUT_EVENT = 'jumbo:user:signout';
-export const SIGNIN_EVENT = 'jumbo:user:signin';
+import { SIGNOUT_EVENT, SIGNIN_EVENT } from './UserEvents';
 
 // Define the context type
 interface UserContextType {
@@ -38,6 +35,7 @@ function UserProviderComponent({ children }: { children: React.ReactNode }) {
       if (userError) {
         console.error('Error getting authenticated user:', userError);
         setUser(null);
+
         return null;
       }
 
@@ -60,6 +58,7 @@ function UserProviderComponent({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error('Error refreshing user:', error);
       setUser(null);
+
       return null;
     }
   }, []);
@@ -80,6 +79,7 @@ function UserProviderComponent({ children }: { children: React.ReactNode }) {
 
       // Perform the actual signout in the background
       const { error } = await supabase.auth.signOut();
+
       if (error) {
         console.error('Error signing out:', error);
       }
@@ -88,6 +88,7 @@ function UserProviderComponent({ children }: { children: React.ReactNode }) {
       window.location.href = '/';
     } catch (error) {
       console.error('Error signing out:', error);
+
       // Even if there's an error, still navigate home
       window.location.href = '/';
     }
@@ -104,6 +105,7 @@ function UserProviderComponent({ children }: { children: React.ReactNode }) {
     // Handle sign-in events from auth callbacks and other components
     const handleSignInEvent = (event: Event) => {
       const customEvent = event as CustomEvent<{ user: User }>;
+
       if (customEvent.detail?.user) {
         setUser(customEvent.detail.user);
         setLoading(false);
@@ -132,9 +134,11 @@ function UserProviderComponent({ children }: { children: React.ReactNode }) {
 
         if (userError) {
           console.error('Error getting authenticated user:', userError);
-          if (isMounted) setUser(null);
+
+          if (isMounted) { setUser(null); }
         } else {
           const newUser = userData?.user || null;
+
           if (isMounted) {
             setUser(newUser);
 
@@ -148,14 +152,17 @@ function UserProviderComponent({ children }: { children: React.ReactNode }) {
 
         // Get access token only - DO NOT use session.user
         const { data: sessionData } = await supabase.auth.getSession();
-        if (isMounted) setSession(sessionData.session);
+
+        if (isMounted) { setSession(sessionData.session); }
 
         // Set up auth state change listener - only do this once
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
           async (event: AuthChangeEvent, newSession: Session | null) => {
-            // IMPORTANT: Never directly use the session.user from the event!
-            // Store the session for token info only
-            if (isMounted) setSession(newSession);
+            /*
+             * IMPORTANT: Never directly use the session.user from the event!
+             * Store the session for token info only
+             */
+            if (isMounted) { setSession(newSession); }
 
             // For SIGNED_OUT events, update UI immediately without waiting for getUser()
             if (event === 'SIGNED_OUT') {
@@ -168,6 +175,7 @@ function UserProviderComponent({ children }: { children: React.ReactNode }) {
                   window.dispatchEvent(new Event(SIGNOUT_EVENT));
                 }
               }
+
               return;
             }
 
@@ -183,14 +191,17 @@ function UserProviderComponent({ children }: { children: React.ReactNode }) {
                   window.dispatchEvent(signInEvent);
                 }
               }
+
               return;
             }
 
             // For other events, verify with getUser()
             const { data, error } = await supabase.auth.getUser();
+
             if (error) {
               console.error('Error getting authenticated user after state change:', error);
-              if (isMounted) setUser(null);
+
+              if (isMounted) { setUser(null); }
             } else if (data?.user) {
               if (isMounted) {
                 setUser(data.user);
@@ -208,9 +219,10 @@ function UserProviderComponent({ children }: { children: React.ReactNode }) {
         authSubscription = subscription;
       } catch (error) {
         console.error('Error fetching user:', error);
-        if (isMounted) setUser(null);
+
+        if (isMounted) { setUser(null); }
       } finally {
-        if (isMounted) setLoading(false);
+        if (isMounted) { setLoading(false); }
       }
     };
 
@@ -218,6 +230,7 @@ function UserProviderComponent({ children }: { children: React.ReactNode }) {
 
     return () => {
       isMounted = false;
+
       if (authSubscription) {
         authSubscription.unsubscribe();
       }
@@ -237,8 +250,10 @@ export const UserProvider = UserProviderComponent;
 // Export the hook as a named function to help with Fast Refresh
 export function useUser() {
   const context = useContext(UserContext);
+
   if (context === undefined) {
     throw new Error('useUser must be used within a UserProvider');
   }
+
   return context;
 }

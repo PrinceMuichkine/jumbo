@@ -59,11 +59,16 @@ export function SignIn({ onSwitchToSignUp, onForgotPassword }: SignInProps) {
       const isLong = isLongEnough(password);
 
       let score = 0;
-      if (hasLower) score++;
-      if (hasUpper) score++;
-      if (hasNum) score++;
-      if (hasSpecial) score++;
-      if (isLong) score++;
+
+      if (hasLower) {score++;}
+
+      if (hasUpper) {score++;}
+
+      if (hasNum) {score++;}
+
+      if (hasSpecial) {score++;}
+
+      if (isLong) {score++;}
 
       setPasswordStrength({
         score,
@@ -260,6 +265,7 @@ export function SignIn({ onSwitchToSignUp, onForgotPassword }: SignInProps) {
           variant: "destructive",
         });
         setIsSubmitting(false);
+
         return;
       }
 
@@ -293,14 +299,16 @@ export function SignIn({ onSwitchToSignUp, onForgotPassword }: SignInProps) {
   };
 
   const getEmailBorderClass = () => {
-    if (isEmailValid === null) return "border-jumbo-elements-borderColor";
+    if (isEmailValid === null) {return "border-jumbo-elements-borderColor";}
+
     return isEmailValid
       ? "border-green-500 ring-1 ring-green-500"
       : "border-red-500 ring-1 ring-red-500";
   };
 
   const getPasswordBorderClass = () => {
-    if (!password) return "border-jumbo-elements-borderColor";
+    if (!password) {return "border-jumbo-elements-borderColor";}
+
     return passwordStrength.score >= 4
       ? "border-green-500 ring-1 ring-green-500"
       : "border-red-500 ring-1 ring-red-500";
@@ -464,6 +472,7 @@ export function SignIn({ onSwitchToSignUp, onForgotPassword }: SignInProps) {
             type="button"
             onClick={async () => {
               setIsSubmitting(true);
+
               try {
                 const { error } = await supabase.auth.signInWithOAuth({
                   provider: 'github',
@@ -471,7 +480,8 @@ export function SignIn({ onSwitchToSignUp, onForgotPassword }: SignInProps) {
                     redirectTo: getRedirectURL(),
                   },
                 });
-                if (error) throw error;
+
+                if (error) {throw error;}
               } catch (err) {
                 console.error('GitHub login error:', err);
                 toast({
@@ -496,6 +506,7 @@ export function SignIn({ onSwitchToSignUp, onForgotPassword }: SignInProps) {
             type="button"
             onClick={async () => {
               setIsSubmitting(true);
+
               try {
                 const { error } = await supabase.auth.signInWithOAuth({
                   provider: 'google',
@@ -507,7 +518,8 @@ export function SignIn({ onSwitchToSignUp, onForgotPassword }: SignInProps) {
                     },
                   },
                 });
-                if (error) throw error;
+
+                if (error) {throw error;}
               } catch (err) {
                 console.error('Google login error:', err);
                 toast({

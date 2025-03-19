@@ -33,6 +33,7 @@ export default function FeedbackForm() {
     }
 
     document.addEventListener('mousedown', handleClickOutside)
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
@@ -44,16 +45,17 @@ export default function FeedbackForm() {
       return
     }
 
-    if (isSubmitting) return
+    if (isSubmitting) {return}
 
     setIsSubmitting(true)
+
     try {
       const { error } = await supabase.rpc('create_feedback', {
         p_sentiment: sentiment,
         p_message: feedback
       })
 
-      if (error) throw error
+      if (error) {throw error}
 
       alert(t(currentLanguage, 'feedback_form.thanks'))
       setFeedback('')

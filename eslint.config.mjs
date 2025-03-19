@@ -1,8 +1,23 @@
-import blitzPlugin from '@blitz/eslint-plugin';
+/**
+ * ESLint Configuration for Jumbo
+ *
+ * This is a minimal ESLint configuration focused on catching critical errors
+ * while not being overly strict on formatting and style issues.
+ *
+ * - Most formatting rules are disabled
+ * - TypeScript unused variable checks are set to warnings instead of errors
+ * - Blitz plugin configuration has been simplified
+ * - Only the most important code safety rules are kept
+ *
+ * This configuration prioritizes development speed over strict code style enforcement.
+ */
+
 import { jsFileExtensions } from '@blitz/eslint-plugin/dist/configs/javascript.js';
-import { getNamingConventionRule, tsFileExtensions } from '@blitz/eslint-plugin/dist/configs/typescript.js';
+import { tsFileExtensions } from '@blitz/eslint-plugin/dist/configs/typescript.js';
 import reactRefreshPlugin from 'eslint-plugin-react-refresh';
 import reactPlugin from 'eslint-plugin-react';
+import tseslint from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
 
 export default [
   {
@@ -23,12 +38,11 @@ export default [
       '.eslintrc.cjs',
     ],
   },
-  ...blitzPlugin.configs.recommended(),
   {
     languageOptions: {
       ecmaVersion: 2020,
       sourceType: 'module',
-      parser: '@typescript-eslint/parser',
+      parser: tsParser,
       parserOptions: {
         ecmaFeatures: {
           jsx: true
@@ -56,21 +70,12 @@ export default [
       '@typescript-eslint/no-empty-object-type': 'off',
       '@blitz/comment-syntax': 'off',
       'prettier/prettier': 'off',
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
+      'react-refresh/only-export-components': 'off',
       'no-eval': 'error',
       'no-new-func': 'error',
       'no-implied-eval': 'error',
       'react/prop-types': 'off',
       'react/react-in-jsx-scope': 'off',
-    },
-  },
-  {
-    files: ['**/*.tsx'],
-    rules: {
-      ...getNamingConventionRule({}, true),
     },
   },
   {

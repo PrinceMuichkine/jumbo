@@ -98,8 +98,10 @@
       "v3_fetcherPersist": true,
       "v3_relativeSplatPath": true,
       "v3_throwAbortReason": true,
-      "unstable_singleFetch": false,
-      "unstable_fogOfWar": false
+      "v3_routeConfig": false,
+      "v3_singleFetch": false,
+      "v3_lazyRouteDiscovery": false,
+      "unstable_optimizeDeps": false
     },
     "manifest": false,
     "publicPath": "/",

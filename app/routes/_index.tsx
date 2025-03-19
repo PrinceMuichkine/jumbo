@@ -8,6 +8,7 @@ import { useTranslation } from '@/lib/contexts/TranslationContext';
 import { t } from '@/lib/i18n/translations';
 import { useEffect } from 'react';
 
+// Meta data for the page
 export const meta: MetaFunction = () => {
   return [
     { title: 'Jumbo by lomi.' },
@@ -15,8 +16,10 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+// Server loader function
 export const loader = () => json({});
 
+// Main page component
 export default function Index() {
   const { currentLanguage } = useTranslation();
 
