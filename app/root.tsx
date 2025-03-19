@@ -13,6 +13,7 @@ import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 import { TranslationProvider } from '@/lib/contexts/TranslationContext';
 import { UserProvider } from '@/lib/contexts/UserContext';
 import { SIGNIN_EVENT } from '@/lib/contexts/UserEvents';
+import { Analytics } from '@vercel/analytics/remix';
 
 import reactToastifyStyles from 'react-toastify/dist/ReactToastify.css?url';
 import globalStyles from './styles/index.scss?url';
@@ -221,6 +222,7 @@ export default function App() {
     <TranslationProvider>
       <UserProvider>
         <Outlet context={{ supabase, user }} />
+        <Analytics />
       </UserProvider>
     </TranslationProvider>
   );
