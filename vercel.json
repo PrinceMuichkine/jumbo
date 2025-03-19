@@ -1,7 +1,8 @@
 {
   "version": 2,
   "framework": "remix",
-  "buildCommand": "npx remix vite:build",
+  "installCommand": "pnpm install --no-frozen-lockfile && pnpm add -D cross-env",
+  "buildCommand": "npx cross-env SKIP_CLOUDFLARE_RUNTIME=true remix vite:build",
   "devCommand": "pnpm run dev",
   "outputDirectory": "build/client",
   "headers": [
