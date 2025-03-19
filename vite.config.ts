@@ -37,11 +37,6 @@ console.warn = function(...args) {
   originalConsoleWarn.apply(console, args);
 };
 
-// Check if we're in a CI environment (Vercel, GitHub Actions, etc.)
-const isCI = process.env.CI === 'true' || process.env.VERCEL === '1';
-// Check if Cloudflare runtime should be skipped
-const skipCloudflareRuntime = process.env.SKIP_CLOUDFLARE_RUNTIME === 'true';
-
 export default defineConfig((config) => {
   return {
     build: {
@@ -72,8 +67,7 @@ export default defineConfig((config) => {
         include: ['path', 'buffer'],
       }),
       createSuppressScssWarningsPlugin(),
-      // Only use Cloudflare dev proxy in local development, not in CI/Vercel, and not when skipping Cloudflare runtime
-      !skipCloudflareRuntime && !isCI && config.mode !== 'test' && remixCloudflareDevProxy(),
+      config.mode !== 'test' && remixCloudflareDevProxy(),
       remixVitePlugin({
         future: {
           v3_fetcherPersist: true,
