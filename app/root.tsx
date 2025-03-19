@@ -47,17 +47,37 @@ export const links: LinksFunction = () => [
 ];
 
 const inlineThemeCode = stripIndents`
-  setTutorialKitTheme();
-
-  function setTutorialKitTheme() {
-    let theme = localStorage.getItem('jumbo_theme');
-
-    if (!theme) {
-      theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  (function() {
+    try {
+      setTutorialKitTheme();
+    } catch (e) {
+      console.warn('Theme initialization error:', e);
+      document.documentElement.setAttribute('data-theme', 'light');
     }
 
-    document.querySelector('html')?.setAttribute('data-theme', theme);
-  }
+    function setTutorialKitTheme() {
+      try {
+        let theme = 'light';
+
+        if (typeof localStorage !== 'undefined') {
+          theme = localStorage.getItem('jumbo_theme') || '';
+        }
+
+        if (!theme && typeof window !== 'undefined' && window.matchMedia) {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        if (!theme) {
+          theme = 'light';
+        }
+
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (err) {
+        console.warn('Error in theme script:', err);
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    }
+  })();
 `;
 
 export const Head = createHead(() => (
@@ -105,8 +125,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-// Default export is a single React component - this is crucial for Fast Refresh
-export default function App() {
+// Export named component for fast refresh compatibility
+export function App() {
   const { access_token, user } = useLoaderData<typeof loader>();
   const { revalidate } = useRevalidator();
 
@@ -206,15 +226,23 @@ export default function App() {
     };
   }, [access_token, revalidate]);
 
-  // Set up theme preference on initial load
+  // Set up theme preference on initial load - with safety check for SSR
   useEffect(() => {
-    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const savedTheme = localStorage.getItem('jumbo.settings.theme');
+    if (typeof window === 'undefined') { return; }
 
-    if (savedTheme) {
-      document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-    } else if (isDarkMode) {
-      document.documentElement.classList.add('dark');
+    try {
+      const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const savedTheme = localStorage.getItem('jumbo.settings.theme');
+
+      if (savedTheme) {
+        document.documentElement.classList.toggle('dark', savedTheme === 'dark');
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      } else if (isDarkMode) {
+        document.documentElement.classList.add('dark');
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    } catch (error) {
+      console.error('Error setting theme preference:', error);
     }
   }, []);
 
@@ -227,3 +255,6 @@ export default function App() {
     </TranslationProvider>
   );
 }
+
+// Use the named export as the default export
+export default App;

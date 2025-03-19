@@ -16,7 +16,7 @@
     "lint:fix": "bun lint -- --fix",
     "update:types": "bunx supabase gen types typescript --project-id adfpiwoqpqaruyxumzzo > app/lib/types/database.types.ts",
     "typecheck": "tsc",
-    "start": "NODE_ENV=production node server.js",
+    "start": "remix-serve ./build/server/index.js",
     "preview": "pnpm run build && pnpm run start"
   },
   "engines": {
@@ -48,6 +48,8 @@
     "@remix-run/express": "^2.16.2",
     "@remix-run/node": "^2.16.2",
     "@remix-run/react": "^2.16.2",
+    "@remix-run/server-runtime": "^2.16.2",
+    "@remix-run/vercel": "^1.19.3",
     "@supabase/auth-helpers-remix": "^0.4.0",
     "@supabase/auth-ui-react": "^0.4.7",
     "@supabase/auth-ui-shared": "^0.1.8",
@@ -55,6 +57,7 @@
     "@uiw/codemirror-theme-vscode": "^4.23.10",
     "@unocss/reset": "^0.61.9",
     "@vercel/analytics": "^1.5.0",
+    "@vercel/edge-runtime": "^0.12.4",
     "@webcontainer/api": "1.3.0-internal.10",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/addon-web-links": "^0.11.0",
@@ -88,7 +91,6 @@
   "devDependencies": {
     "@blitz/eslint-plugin": "0.1.0",
     "@remix-run/dev": "^2.16.2",
-    "@remix-run/vercel": "^1.19.3",
     "@types/diff": "^5.2.3",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",

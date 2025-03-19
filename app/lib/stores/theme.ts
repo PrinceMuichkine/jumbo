@@ -10,17 +10,28 @@ export function themeIsDark() {
 
 export const DEFAULT_THEME = 'light';
 
-export const themeStore = atom<Theme>(initStore());
-
-function initStore() {
-  if (!import.meta.env.SSR) {
+// Create a function to safely initialize the theme on both client and server
+function safeInitTheme(): Theme {
+  // Only access browser APIs if we're in the browser
+  if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     const persistedTheme = localStorage.getItem(kTheme) as Theme | undefined;
     const themeAttribute = document.querySelector('html')?.getAttribute('data-theme');
-
     return persistedTheme ?? (themeAttribute as Theme) ?? DEFAULT_THEME;
   }
 
+  // Default for server-side rendering
   return DEFAULT_THEME;
+}
+
+// Initialize with a function that won't run browser code during SSR
+export const themeStore = atom<Theme>(DEFAULT_THEME);
+
+// Initialize the store with the actual theme value on client-side
+if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+  // Run after the component has mounted
+  setTimeout(() => {
+    themeStore.set(safeInitTheme());
+  }, 0);
 }
 
 export function toggleTheme() {
@@ -29,7 +40,8 @@ export function toggleTheme() {
 
   themeStore.set(newTheme);
 
-  localStorage.setItem(kTheme, newTheme);
-
-  document.querySelector('html')?.setAttribute('data-theme', newTheme);
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(kTheme, newTheme);
+    document.querySelector('html')?.setAttribute('data-theme', newTheme);
+  }
 }

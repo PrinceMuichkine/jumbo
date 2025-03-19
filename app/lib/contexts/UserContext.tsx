@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import type { Session, User, AuthChangeEvent } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabase/client';
+import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { clearAuthState } from '@/utils/localStorage';
 import { SIGNOUT_EVENT, SIGNIN_EVENT } from './UserEvents';
 
@@ -21,21 +21,45 @@ const UserContext = createContext<UserContextType>({
   refreshUser: async () => { return null; },
 });
 
+// Create a client instance we'll use throughout this component
+const supabaseClient = createSupabaseBrowserClient();
+
+// Safely access supabase auth to avoid "Auth session missing" errors
+const safeGetUser = async () => {
+  try {
+    const { data, error } = await supabaseClient.auth.getUser();
+    return { data, error };
+  } catch (error) {
+    console.warn('Safe get user caught error:', error);
+    return { data: { user: null }, error };
+  }
+};
+
+const safeGetSession = async () => {
+  try {
+    const { data, error } = await supabaseClient.auth.getSession();
+    return { data, error };
+  } catch (error) {
+    console.warn('Safe get session caught error:', error);
+    return { data: { session: null }, error };
+  }
+};
+
 // Define the provider component as a named function to help with Fast Refresh
 function UserProviderComponent({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const refreshUser = useCallback(async () => {
     try {
       // Always get authenticated user data from getUser() first
-      const { data: userData, error: userError } = await supabase.auth.getUser();
+      const { data: userData, error: userError } = await safeGetUser();
 
       if (userError) {
         console.error('Error getting authenticated user:', userError);
         setUser(null);
-
         return null;
       }
 
@@ -43,7 +67,7 @@ function UserProviderComponent({ children }: { children: React.ReactNode }) {
       setUser(newUser);
 
       // Get access token for auth operations, but DO NOT use session.user
-      const { data: sessionData } = await supabase.auth.getSession();
+      const { data: sessionData } = await safeGetSession();
       setSession(sessionData.session);
 
       // If user was successfully fetched, dispatch sign-in event
@@ -58,7 +82,6 @@ function UserProviderComponent({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error('Error refreshing user:', error);
       setUser(null);
-
       return null;
     }
   }, []);
@@ -78,7 +101,7 @@ function UserProviderComponent({ children }: { children: React.ReactNode }) {
       clearAuthState();
 
       // Perform the actual signout in the background
-      const { error } = await supabase.auth.signOut();
+      const { error } = await supabaseClient.auth.signOut();
 
       if (error) {
         console.error('Error signing out:', error);
@@ -96,6 +119,8 @@ function UserProviderComponent({ children }: { children: React.ReactNode }) {
 
   // Listen for sign-out events from other components
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     const handleSignOutEvent = () => {
       setUser(null);
       setSession(null);
@@ -121,7 +146,10 @@ function UserProviderComponent({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+  // Initialize auth state after component mount, only on client side
   useEffect(() => {
+    if (typeof window === 'undefined' || isInitialized) return;
+
     let isMounted = true;
     let authSubscription: { unsubscribe: () => void } | null = null;
 
@@ -129,11 +157,16 @@ function UserProviderComponent({ children }: { children: React.ReactNode }) {
       try {
         setLoading(true);
 
-        // Always use getUser() first for authenticated data
-        const { data: userData, error: userError } = await supabase.auth.getUser();
+        // Wait for a short delay to ensure browser is ready
+        await new Promise(resolve => setTimeout(resolve, 10));
+
+        // Try to get user data
+        const { data: userData, error: userError } = await safeGetUser();
 
         if (userError) {
-          console.error('Error getting authenticated user:', userError);
+          if (userError.message !== 'Auth session missing!') {
+            console.error('Error getting authenticated user:', userError);
+          }
 
           if (isMounted) { setUser(null); }
         } else {
@@ -150,16 +183,15 @@ function UserProviderComponent({ children }: { children: React.ReactNode }) {
           }
         }
 
-        // Get access token only - DO NOT use session.user
-        const { data: sessionData } = await supabase.auth.getSession();
+        // Get access token only
+        const { data: sessionData } = await safeGetSession();
 
         if (isMounted) { setSession(sessionData.session); }
 
         // Set up auth state change listener - only do this once
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        const { data: { subscription } } = supabaseClient.auth.onAuthStateChange(
           async (event: AuthChangeEvent, newSession: Session | null) => {
             /*
-             * IMPORTANT: Never directly use the session.user from the event!
              * Store the session for token info only
              */
             if (isMounted) { setSession(newSession); }
@@ -196,10 +228,12 @@ function UserProviderComponent({ children }: { children: React.ReactNode }) {
             }
 
             // For other events, verify with getUser()
-            const { data, error } = await supabase.auth.getUser();
+            const { data, error } = await safeGetUser();
 
             if (error) {
-              console.error('Error getting authenticated user after state change:', error);
+              if (error.message !== 'Auth session missing!') {
+                console.error('Error getting authenticated user after state change:', error);
+              }
 
               if (isMounted) { setUser(null); }
             } else if (data?.user) {
@@ -222,11 +256,17 @@ function UserProviderComponent({ children }: { children: React.ReactNode }) {
 
         if (isMounted) { setUser(null); }
       } finally {
-        if (isMounted) { setLoading(false); }
+        if (isMounted) {
+          setLoading(false);
+          setIsInitialized(true);
+        }
       }
     };
 
-    fetchUser();
+    // Delay the initialization slightly to allow client hydration to complete first
+    setTimeout(() => {
+      fetchUser();
+    }, 50);
 
     return () => {
       isMounted = false;
@@ -235,7 +275,7 @@ function UserProviderComponent({ children }: { children: React.ReactNode }) {
         authSubscription.unsubscribe();
       }
     };
-  }, []);
+  }, [isInitialized]);
 
   return (
     <UserContext.Provider value={{ user, session, loading, signOut, refreshUser }}>

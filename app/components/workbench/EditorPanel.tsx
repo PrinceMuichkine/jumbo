@@ -23,6 +23,7 @@ import { isMobile } from '@/utils/mobile';
 import { FileBreadcrumb } from './FileBreadcrumb';
 import { FileTree } from './FileTree';
 import { Terminal, type TerminalRef } from './terminal/Terminal';
+import type { Terminal as XTerm } from '@xterm/xterm';
 
 interface EditorPanelProps {
   files?: FileMap;
@@ -67,6 +68,13 @@ export const EditorPanel = memo(
 
     const [activeTerminal, setActiveTerminal] = useState(0);
     const [terminalCount, setTerminalCount] = useState(1);
+    const [terminalReady, setTerminalReady] = useState(false);
+    const [terminalVisible, setTerminalVisible] = useState(false);
+    const [panelResized, setPanelResized] = useState(false);
+
+    useEffect(() => {
+      terminalRefs.current = new Array(terminalCount).fill(null);
+    }, [terminalCount]);
 
     const activeFileSegments = useMemo(() => {
       if (!editorDocument) {
@@ -86,8 +94,15 @@ export const EditorPanel = memo(
       });
 
       const unsubscribeFromThemeStore = themeStore.subscribe(() => {
-        for (const ref of Object.values(terminalRefs.current)) {
-          ref?.reloadStyles();
+        for (let i = 0; i < terminalRefs.current.length; i++) {
+          try {
+            const ref = terminalRefs.current[i];
+            if (ref) {
+              ref.reloadStyles();
+            }
+          } catch (error) {
+            console.error(`Error reloading styles for terminal ${i}:`, error);
+          }
         }
       });
 
@@ -96,6 +111,72 @@ export const EditorPanel = memo(
         unsubscribeFromThemeStore();
       };
     }, []);
+
+    useEffect(() => {
+      if (showTerminal) {
+        const timer = setTimeout(() => {
+          setTerminalVisible(true);
+        }, 50);
+        return () => clearTimeout(timer);
+      } else {
+        setTerminalVisible(false);
+      }
+    }, [showTerminal]);
+
+    useEffect(() => {
+      if (!terminalVisible) return;
+
+      const timer = setTimeout(() => {
+        setPanelResized(true);
+
+        const fitTimer = setTimeout(() => {
+          for (let i = 0; i < terminalRefs.current.length; i++) {
+            try {
+              const ref = terminalRefs.current[i];
+              if (ref) {
+                ref.fitTerminal();
+              }
+            } catch (error) {
+              console.error(`Error fitting terminal ${i} after panel transition:`, error);
+            }
+          }
+        }, 200);
+
+        return () => clearTimeout(fitTimer);
+      }, 150);
+
+      return () => clearTimeout(timer);
+    }, [terminalVisible]);
+
+    useEffect(() => {
+      if (!showTerminal) {
+        setPanelResized(false);
+      }
+    }, [showTerminal]);
+
+    const handlePanelResize = () => {
+      if (!terminalVisible) return;
+
+      setTimeout(() => {
+        for (let i = 0; i < terminalRefs.current.length; i++) {
+          try {
+            const ref = terminalRefs.current[i];
+            if (ref) {
+              ref.fitTerminal();
+            }
+          } catch (error) {
+            console.error(`Error fitting terminal ${i} after manual resize:`, error);
+          }
+        }
+      }, 100);
+    };
+
+    const addTerminal = () => {
+      if (terminalCount < MAX_TERMINALS) {
+        setTerminalCount(terminalCount + 1);
+        setActiveTerminal(terminalCount);
+      }
+    };
 
     useEffect(() => {
       const { current: terminal } = terminalPanelRef;
@@ -115,15 +196,8 @@ export const EditorPanel = memo(
       terminalToggledByShortcut.current = false;
     }, [showTerminal]);
 
-    const addTerminal = () => {
-      if (terminalCount < MAX_TERMINALS) {
-        setTerminalCount(terminalCount + 1);
-        setActiveTerminal(terminalCount);
-      }
-    };
-
     return (
-      <PanelGroup direction="vertical">
+      <PanelGroup direction="vertical" onLayout={handlePanelResize}>
         <Panel defaultSize={showTerminal ? DEFAULT_EDITOR_SIZE : 100} minSize={20}>
           <PanelGroup direction="horizontal">
             <Panel defaultSize={20} minSize={10} collapsible>
@@ -195,6 +269,7 @@ export const EditorPanel = memo(
               workbenchStore.toggleTerminal(false);
             }
           }}
+          onResize={handlePanelResize}
         >
           <div className="h-full">
             <div className="bg-jumbo-elements-terminals-background h-full flex flex-col">
@@ -229,8 +304,25 @@ export const EditorPanel = memo(
                   onClick={() => workbenchStore.toggleTerminal(false)}
                 />
               </div>
-              {Array.from({ length: terminalCount }, (_, index) => {
+              {terminalVisible && Array.from({ length: terminalCount }, (_, index) => {
                 const isActive = activeTerminal === index;
+
+                const handleTerminalReady = (terminal: XTerm) => {
+                  try {
+                    workbenchStore.attachTerminal(terminal);
+                    setTerminalReady(true);
+                  } catch (error) {
+                    console.error(`Error handling terminal ready for terminal ${index}:`, error);
+                  }
+                };
+
+                const handleTerminalResize = (cols: number, rows: number) => {
+                  try {
+                    workbenchStore.onTerminalResize(cols, rows);
+                  } catch (error) {
+                    console.error(`Error handling terminal resize for terminal ${index}:`, error);
+                  }
+                };
 
                 return (
                   <Terminal
@@ -239,10 +331,12 @@ export const EditorPanel = memo(
                       hidden: !isActive,
                     })}
                     ref={(ref) => {
-                      terminalRefs.current.push(ref);
+                      if (ref !== null) {
+                        terminalRefs.current[index] = ref;
+                      }
                     }}
-                    onTerminalReady={(terminal) => workbenchStore.attachTerminal(terminal)}
-                    onTerminalResize={(cols, rows) => workbenchStore.onTerminalResize(cols, rows)}
+                    onTerminalReady={handleTerminalReady}
+                    onTerminalResize={handleTerminalResize}
                     theme={theme}
                   />
                 );
