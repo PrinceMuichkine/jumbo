@@ -1,29 +1,13 @@
 import { createBrowserClient } from '@supabase/auth-helpers-remix';
 import type { Database } from '@/lib/types/database.types';
-import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 
 // Safely check if we're in a browser environment
 const isBrowser = typeof window !== 'undefined';
 
-// Access environment variables safely
-const getEnv = (key: string): string => {
-  if (typeof process !== 'undefined' && process.env && process.env[key]) {
-    return process.env[key] as string;
-  }
-
-  // @ts-ignore - Vite-specific env access
-  if (isBrowser && typeof import.meta !== 'undefined' && import.meta.env) {
-    // @ts-ignore - Vite-specific env access
-    return import.meta.env[key] || '';
-  }
-
-  return '';
-};
-
 // Remove debug logging in production to improve performance
-if (isBrowser && process.env.NODE_ENV === 'development') {
-  console.log('SUPABASE_URL:', getEnv('VITE_SUPABASE_URL'));
-  console.log('SUPABASE_ANON_KEY:', getEnv('VITE_SUPABASE_ANON_KEY') ? 'is defined' : 'is not defined');
+if (isBrowser && process.env['DEV']) {
+  console.log('VITE_SUPABASE_URL:', process.env['VITE_SUPABASE_URL']);
+  console.log('VITE_SUPABASE_ANON_KEY:', process.env['VITE_SUPABASE_ANON_KEY'] ? 'is defined' : 'is not defined');
 }
 
 // Cache the Supabase client instance to prevent multiple initializations
@@ -31,44 +15,21 @@ let supabaseClientInstance: ReturnType<typeof createBrowserClient<Database>> | n
 
 // Create a method that can be used during client-side rendering
 export const createSupabaseBrowserClient = (
-  supabaseUrl: string = getEnv('VITE_SUPABASE_URL'),
-  supabaseKey: string = getEnv('VITE_SUPABASE_ANON_KEY')
+  supabaseUrl: string = process.env['VITE_SUPABASE_URL'] as string,
+  supabaseKey: string = process.env['VITE_SUPABASE_ANON_KEY'] as string
 ) => {
   if (isBrowser && supabaseClientInstance) {
     return supabaseClientInstance;
   }
 
-  if (!supabaseUrl || !supabaseKey) {
-    console.error('Supabase URL or key is missing');
-    return createDummyClient();
+  // Create client with default options
+  const client = createBrowserClient<Database>(supabaseUrl, supabaseKey);
+
+  if (isBrowser) {
+    supabaseClientInstance = client;
   }
 
-  try {
-    // Create client with minimal required options
-    const client = createBrowserClient<Database>(supabaseUrl, supabaseKey, {
-      cookieOptions: {
-        name: 'sb-auth',
-        path: '/',
-        sameSite: 'lax'
-      }
-    });
-
-    if (isBrowser) {
-      supabaseClientInstance = client;
-
-      // Simple debug logging for auth state changes in development
-      if (process.env.NODE_ENV === 'development') {
-        client.auth.onAuthStateChange(function(event: AuthChangeEvent, session: Session | null) {
-          console.log('Auth event:', event, session ? 'with session' : 'no session');
-        });
-      }
-    }
-
-    return client;
-  } catch (error) {
-    console.error('Error creating Supabase client:', error);
-    return createDummyClient();
-  }
+  return client;
 };
 
 /**
@@ -86,39 +47,36 @@ export const getRedirectURL = () => {
 };
 
 /**
- * Create a dummy client for SSR or when real client fails
+ * Export a non-functional client for imports during SSR
+ * This will be replaced with a real client on the browser
  */
-const createDummyClient = () => {
-  return {
-    auth: {
-      getUser: () => Promise.resolve({ data: { user: null }, error: null }),
-      getSession: () => Promise.resolve({ data: { session: null }, error: null }),
-      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
-      signOut: () => Promise.resolve({ error: null }),
-      signInWithOAuth: () => Promise.resolve({ error: null }),
-      signInWithOtp: () => Promise.resolve({ error: null }),
-      signUp: () => Promise.resolve({ error: null }),
-      exchangeCodeForSession: () => Promise.resolve({ data: { session: null }, error: null }),
-    },
-    from: () => ({ select: () => Promise.resolve({ data: null, error: null }) }),
-  } as any;
-};
+const dummyClient = {
+  auth: {
+    getUser: () => Promise.resolve({ data: { user: null }, error: null }),
+    getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+    onAuthStateChange: () => ({ data: { subscription: {
+
+      unsubscribe: () => {}
+    } } }),
+    signOut: () => Promise.resolve({ error: null }),
+    signInWithOAuth: () => Promise.resolve({ error: null }),
+    signInWithOtp: () => Promise.resolve({ error: null }),
+    signUp: () => Promise.resolve({ error: null }),
+    exchangeCodeForSession: () => Promise.resolve({ data: { session: null }, error: null }),
+  },
+  from: () => ({ select: () => Promise.resolve({ data: null, error: null }) }),
+} as any;
 
 /**
  * Export a client that will be used during SSR but replaced client-side
  */
 export const supabase = isBrowser
-  ? (() => {
-      // Initialize in a function to handle any errors safely
-      try {
-        // Get env vars safely
-        const supabaseUrl = getEnv('VITE_SUPABASE_URL');
-        const supabaseKey = getEnv('VITE_SUPABASE_ANON_KEY');
+  ? createSupabaseBrowserClient(
 
-        return createSupabaseBrowserClient(supabaseUrl, supabaseKey);
-      } catch (error) {
-        console.error('Error initializing Supabase client:', error);
-        return createDummyClient();
-      }
-    })()
-  : createDummyClient();
+      /**
+       * During CSR we access environment variables via import.meta.env in Vite
+       */
+      process.env['VITE_SUPABASE_URL'] || '',
+      process.env['VITE_SUPABASE_ANON_KEY'] || ''
+    )
+  : dummyClient;
