@@ -1,13 +1,9 @@
 {
   "version": 2,
   "framework": "remix",
-  "buildCommand": "pnpm run vercel-build",
+  "buildCommand": "pnpm run build",
   "devCommand": "pnpm run dev",
-  "installCommand": "pnpm install --no-frozen-lockfile",
-  "env": {
-    "SKIP_WORKERD_POSTINSTALL": "1",
-    "NODE_ENV": "production"
-  },
+  "outputDirectory": "build/client",
   "headers": [
     {
       "source": "/(.*)",

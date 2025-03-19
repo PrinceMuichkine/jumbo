@@ -1,23 +1,74 @@
-import { vitePlugin as remixVitePlugin } from '@remix-run/dev';
-import { vercelPreset } from '@vercel/remix/vite';
+import { cloudflareDevProxyVitePlugin as remixCloudflareDevProxy, vitePlugin as remixVitePlugin } from '@remix-run/dev';
 import UnoCSS from 'unocss/vite';
-import { defineConfig, type ViteDevServer } from 'vite';
+import { defineConfig, type ViteDevServer, type Plugin } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { optimizeCssModules } from 'vite-plugin-optimize-css-modules';
 import tsconfigPaths from 'vite-tsconfig-paths';
+
+// Custom plugin to completely suppress SCSS deprecation warnings
+function createSuppressScssWarningsPlugin(): Plugin {
+  return {
+    name: 'suppress-scss-warnings',
+    enforce: 'pre' as const,
+    transform(code: string, id: string) {
+      if (id.endsWith('.scss') || id.includes('.scss?')) {
+        // Add a comment at the top to silence the warnings
+        return {
+          code: `// @use "sass:math"; \n${code}`,
+          map: null
+        };
+      }
+      return undefined;
+    },
+  };
+}
+
+// Silent console warnings during build for SCSS
+const originalConsoleWarn = console.warn;
+console.warn = function(...args) {
+  // Filter out SCSS deprecation warnings
+  if (typeof args[0] === 'string' &&
+     (args[0].includes('SCSS') ||
+      args[0].includes('Sass') ||
+      args[0].includes('sass') ||
+      args[0].includes('scss'))) {
+    return;
+  }
+  originalConsoleWarn.apply(console, args);
+};
 
 export default defineConfig((config) => {
   return {
     build: {
       target: 'esnext',
-      chunkSizeWarningLimit: 1000, // Increase size limit to avoid warnings
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          // Suppress deprecation warnings
+          logger: { warn: () => {} },
+          // Use modern math.div approach
+          additionalData: `@use "sass:math"; $enable-important-utilities: false;`,
+          sassOptions: {
+            outputStyle: config.mode === 'production' ? 'compressed' : 'expanded',
+            quietDeps: true,
+            quiet: true,
+            verbose: false,
+            // Suppress all warnings
+            logger: { warn: () => {}, debug: () => {} },
+          }
+        }
+      },
+      // Disable source maps in production for smaller files
+      devSourcemap: config.mode !== 'production',
     },
     plugins: [
       nodePolyfills({
         include: ['path', 'buffer'],
       }),
+      createSuppressScssWarningsPlugin(),
+      config.mode !== 'test' && remixCloudflareDevProxy(),
       remixVitePlugin({
-        presets: [vercelPreset()],
         future: {
           v3_fetcherPersist: true,
           v3_relativeSplatPath: true,
@@ -28,11 +79,11 @@ export default defineConfig((config) => {
       tsconfigPaths(),
       chrome129IssuePlugin(),
       config.mode === 'production' && optimizeCssModules({ apply: 'build' }),
-    ],
+    ].filter(Boolean),
   };
 });
 
-function chrome129IssuePlugin() {
+function chrome129IssuePlugin(): Plugin {
   return {
     name: 'chrome129IssuePlugin',
     configureServer(server: ViteDevServer) {
