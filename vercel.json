@@ -4,7 +4,7 @@
   "installCommand": "pnpm install",
   "framework": null,
   "functions": {
-    "api/index.mjs": {
+    "api/index.js": {
       "memory": 1024,
       "maxDuration": 10
     }
@@ -38,7 +38,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/api/index.mjs"
+      "dest": "/api/index.js"
     }
   ]
 }
