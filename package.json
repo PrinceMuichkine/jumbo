@@ -7,7 +7,7 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "deploy": "pnpm run build && wrangler pages deploy ./dist",
+    "deploy": "pnpm install --no-frozen-lockfile && pnpm run build && wrangler pages deploy ./dist",
     "build": "remix vite:build",
     "dev": "remix vite:dev",
     "test": "vitest --run",
