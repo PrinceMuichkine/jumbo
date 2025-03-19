@@ -18,19 +18,5 @@
         }
       ]
     }
-  ],
-  "functions": {
-    "functions/**/*.ts": {
-      "memory": 1024,
-      "maxDuration": 10
-    }
-  },
-  "env": {
-    "SUPABASE_URL": {
-      "edge": true
-    },
-    "SUPABASE_ANON_KEY": {
-      "edge": true
-    }
-  }
+  ]
 }
