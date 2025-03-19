@@ -37,7 +37,7 @@ console.warn = function(...args) {
   originalConsoleWarn.apply(console, args);
 };
 
-export default defineConfig(() => {
+export default defineConfig((config) => {
   return {
     build: {
       target: 'esnext',
@@ -69,7 +69,7 @@ export default defineConfig(() => {
           // Use modern math.div approach
           additionalData: `@use "sass:math"; $enable-important-utilities: false;`,
           sassOptions: {
-            outputStyle: 'compressed',
+            outputStyle: config.mode === 'production' ? 'compressed' : 'expanded',
             quietDeps: true,
             quiet: true,
             verbose: false,
@@ -78,8 +78,8 @@ export default defineConfig(() => {
           }
         }
       },
-      // Always disable source maps for smaller files
-      devSourcemap: false,
+      // Disable source maps in production for smaller files
+      devSourcemap: config.mode !== 'production',
     },
     plugins: [
       nodePolyfills({
@@ -94,18 +94,10 @@ export default defineConfig(() => {
           v3_throwAbortReason: true,
         },
         serverModuleFormat: 'esm',
-        serverBuildFile: 'index.js',
       }),
       UnoCSS(),
-      optimizeCssModules({ apply: 'build' }),
-      chrome129IssuePlugin(),
-    ],
-    // Configure Vite to properly handle ESM
-    ssr: {
-      noExternal: true,
-      target: 'node',
-      format: 'esm',
-    },
+      config.mode === 'production' && optimizeCssModules({ apply: 'build' }),
+    ].filter(Boolean),
   };
 });
 

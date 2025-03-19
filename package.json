@@ -16,7 +16,7 @@
     "lint:fix": "bun lint -- --fix",
     "update:types": "bunx supabase gen types typescript --project-id adfpiwoqpqaruyxumzzo > app/lib/types/database.types.ts",
     "typecheck": "tsc",
-    "start": "remix-serve ./build/server/index.js",
+    "start": "NODE_ENV=production node server.js",
     "preview": "pnpm run build && pnpm run start"
   },
   "engines": {
