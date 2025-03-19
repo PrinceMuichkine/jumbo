@@ -4,7 +4,6 @@
   "buildCommand": "pnpm run build",
   "installCommand": "pnpm install",
   "devCommand": "pnpm run dev",
-  "ignoreCommand": "exit 0",
   "outputDirectory": "build",
   "headers": [
     {
@@ -32,8 +31,5 @@
         }
       ]
     }
-
-
-
   ]
 }
