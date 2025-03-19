@@ -1,9 +1,9 @@
 {
-  "version": 2.0,
+  "version": 2,
   "framework": "remix",
   "buildCommand": "pnpm run vercel-build",
   "devCommand": "pnpm run dev",
-  "outputDirectory": "build/client",
+  "installCommand": "pnpm install --no-frozen-lockfile",
   "headers": [
     {
       "source": "/(.*)",
@@ -30,8 +30,5 @@
         }
       ]
     }
-  ],
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.js" }
   ]
 }
