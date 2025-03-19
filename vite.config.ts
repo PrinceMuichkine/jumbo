@@ -7,48 +7,16 @@ import { optimizeCssModules } from 'vite-plugin-optimize-css-modules';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig((config) => {
+  // Only use Vercel preset for production builds
+  const presets = [];
+  if (config.command === 'build') {
+    presets.push(vercelPreset());
+  }
+
   return {
     build: {
       target: 'esnext',
-      chunkSizeWarningLimit: 1000,
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            'vendor-react': ['react', 'react-dom', '@remix-run/react'],
-            'vendor-codemirror': [
-              '@codemirror/autocomplete',
-              '@codemirror/commands',
-              '@codemirror/lang-cpp',
-              '@codemirror/lang-css',
-              '@codemirror/lang-html',
-              '@codemirror/lang-javascript',
-              '@codemirror/lang-json',
-              '@codemirror/lang-markdown',
-              '@codemirror/lang-python',
-              '@codemirror/lang-sass',
-              '@codemirror/lang-wast',
-              '@codemirror/language',
-              '@codemirror/search',
-              '@codemirror/state',
-              '@codemirror/view'
-            ],
-            'vendor-ui': [
-              '@radix-ui/react-dialog',
-              '@radix-ui/react-dropdown-menu',
-              'clsx',
-              'framer-motion',
-              'react-resizable-panels',
-              'tailwind-merge'
-            ],
-            'vendor-supabase': [
-              '@supabase/auth-helpers-remix',
-              '@supabase/auth-ui-react',
-              '@supabase/auth-ui-shared',
-              '@supabase/supabase-js'
-            ]
-          }
-        }
-      }
+      chunkSizeWarningLimit: 1000, // Increase size limit to avoid warnings
     },
     plugins: [
       nodePolyfills({
@@ -56,7 +24,7 @@ export default defineConfig((config) => {
       }),
       config.mode !== 'test' && remixCloudflareDevProxy(),
       remixVitePlugin({
-        presets: [vercelPreset()],
+        presets,
         future: {
           v3_fetcherPersist: true,
           v3_relativeSplatPath: true,
