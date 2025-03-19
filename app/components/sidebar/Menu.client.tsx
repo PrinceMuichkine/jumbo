@@ -8,12 +8,11 @@ import { cubicEasingFn } from '@/utils/easings';
 import { logger } from '@/utils/logger';
 import { HistoryItem } from './HistoryItem';
 import { binDates } from './date-binning';
-import { useOutletContext } from '@remix-run/react';
-import type { SupabaseOutletContext } from '@/lib/types/supabase.types';
 import { SettingsModal } from '@/components/settings/SettingsModal';
 import { ReferralModal } from '@/components/settings/ReferralModal';
 import { SubscriptionModal } from '@/components/settings/SubscriptionModal';
-import { useUser, SIGNOUT_EVENT, SIGNIN_EVENT } from '@/lib/contexts/UserContext';
+import { useUser } from '@/lib/contexts/UserContext';
+import { SIGNOUT_EVENT, SIGNIN_EVENT } from '@/lib/contexts/UserEvents';
 import type { User } from '@supabase/supabase-js';
 
 const menuVariants = {

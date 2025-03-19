@@ -11,7 +11,8 @@ import { motion } from 'framer-motion';
 import { useOutletContext } from '@remix-run/react';
 import type { SupabaseOutletContext } from '@/lib/types/supabase.types';
 import { supabase as supabaseClient } from '@/lib/supabase/client';
-import { useUser, SIGNOUT_EVENT, SIGNIN_EVENT } from '@/lib/contexts/UserContext';
+import { useUser } from '@/lib/contexts/UserContext';
+import { SIGNOUT_EVENT, SIGNIN_EVENT } from '@/lib/contexts/UserEvents';
 
 export function Header() {
   const chat = useStore(chatStore);
