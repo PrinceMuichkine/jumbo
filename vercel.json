@@ -3,6 +3,7 @@
   "installCommand": "pnpm install --frozen-lockfile",
   "framework": "remix",
   "regions": ["iad1"],
+  "public": false,
   "headers": [
     {
       "source": "/(.*)",
@@ -13,12 +14,6 @@
         { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
       ]
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/functions/$1"
     }
   ]
 }

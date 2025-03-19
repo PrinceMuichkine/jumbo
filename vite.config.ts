@@ -4,6 +4,7 @@ import { defineConfig, type ViteDevServer, type Plugin } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { optimizeCssModules } from 'vite-plugin-optimize-css-modules';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import { vercelPreset } from '@vercel/remix/vite';
 
 // Custom plugin to completely suppress SCSS deprecation warnings
 function createSuppressScssWarningsPlugin(): Plugin {
@@ -93,6 +94,7 @@ export default defineConfig((config) => {
           v3_relativeSplatPath: true,
           v3_throwAbortReason: true,
         },
+        presets: [vercelPreset()],
         serverModuleFormat: 'esm',
       }),
       UnoCSS(),

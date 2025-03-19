@@ -78,20 +78,17 @@ importers:
         specifier: ^2.1.6
         version: 2.1.6(@types/react-dom@18.3.5(@types/react@18.3.19))(@types/react@18.3.19)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@remix-run/express':
-        specifier: ^2.16.2
+        specifier: ^2.15.3
         version: 2.16.2(express@4.21.2)(typescript@5.8.2)
       '@remix-run/node':
-        specifier: ^2.16.2
+        specifier: ^2.15.3
         version: 2.16.2(typescript@5.8.2)
       '@remix-run/react':
-        specifier: ^2.16.2
+        specifier: ^2.15.3
         version: 2.16.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.2)
       '@remix-run/server-runtime':
-        specifier: ^2.16.2
+        specifier: ^2.15.3
         version: 2.16.2(typescript@5.8.2)
-      '@remix-run/vercel':
-        specifier: ^1.19.3
-        version: 1.19.3(@vercel/node@5.1.14(rollup@4.36.0))
       '@supabase/auth-helpers-remix':
         specifier: ^0.4.0
         version: 0.4.0(@supabase/supabase-js@2.49.1)
@@ -116,6 +113,9 @@ importers:
       '@vercel/edge-runtime':
         specifier: ^0.12.4
         version: 0.12.4
+      '@vercel/remix':
+        specifier: ^2.15.3
+        version: 2.15.3(@remix-run/dev@2.16.2(@remix-run/react@2.16.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.2))(@types/node@16.18.11)(sass-embedded@1.86.0)(ts-node@10.9.1(@types/node@16.18.11)(typescript@5.8.2))(typescript@5.8.2)(vite@5.4.14(@types/node@16.18.11)(sass-embedded@1.86.0)))(@remix-run/node@2.16.2(typescript@5.8.2))(@remix-run/server-runtime@2.16.2(typescript@5.8.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@webcontainer/api':
         specifier: 1.3.0-internal.10
         version: 1.3.0-internal.10
@@ -208,7 +208,7 @@ importers:
         specifier: 0.1.0
         version: 0.1.0(jiti@1.21.7)(prettier@3.5.3)(typescript@5.8.2)
       '@remix-run/dev':
-        specifier: ^2.16.2
+        specifier: ^2.15.3
         version: 2.16.2(@remix-run/react@2.16.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.2))(@types/node@16.18.11)(sass-embedded@1.86.0)(ts-node@10.9.1(@types/node@16.18.11)(typescript@5.8.2))(typescript@5.8.2)(vite@5.4.14(@types/node@16.18.11)(sass-embedded@1.86.0))
       '@types/diff':
         specifier: ^5.2.3
@@ -1676,10 +1676,6 @@ packages:
       typescript:
         optional: true
 
-  '@remix-run/node@1.19.3':
-    resolution: {integrity: sha512-z5qrVL65xLXIUpU4mkR4MKlMeKARLepgHAk4W5YY3IBXOreRqOGUC70POViYmY7x38c2Ia1NwqL80H+0h7jbMw==}
-    engines: {node: '>=14.0.0'}
-
   '@remix-run/node@2.16.2':
     resolution: {integrity: sha512-Q+DdX9YU1eCqwtWxJG2rIk2sYVZokCzb/T3ZsnhkWkSc0/NTMcrtkQY6JRymcMEoR+oVnJaJ9xPHt1P/BV4k9Q==}
     engines: {node: '>=18.0.0'}
@@ -1704,14 +1700,6 @@ packages:
     resolution: {integrity: sha512-O3rHJzAQKamUz1fvE0Qaw0xSFqsA/yafi2iqeE0pvdFtCO1viYx8QL6f3Ln/aCCTLxs68SLf0KPM9eSeM8yBnA==}
     engines: {node: '>=14.0.0'}
 
-  '@remix-run/router@1.7.2':
-    resolution: {integrity: sha512-7Lcn7IqGMV+vizMPoEl5F0XDshcdDYtMI6uJLQdQz5CfZAwy3vvGKYSUk789qndt5dEC4HfSjviSYlSoHGL2+A==}
-    engines: {node: '>=14'}
-
-  '@remix-run/server-runtime@1.19.3':
-    resolution: {integrity: sha512-KzQ+htUsKqpBgKE2tWo7kIIGy3MyHP58Io/itUPvV+weDjApwr9tQr9PZDPA3yAY6rAzLax7BU0NMSYCXWFY5A==}
-    engines: {node: '>=14.0.0'}
-
   '@remix-run/server-runtime@2.16.2':
     resolution: {integrity: sha512-tleEyGfFcczyUzBumDXRV4ns8ghqoCXgiNUrTWmvtI+8Vaw9bIB9Y4/m852YNLz1Kum1d936SobATzijhnEPsA==}
     engines: {node: '>=18.0.0'}
@@ -1720,12 +1708,6 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
-
-  '@remix-run/vercel@1.19.3':
-    resolution: {integrity: sha512-LoWffUns8u9oqOHSvZtH0LMXWm4NuZ2hUldLx7TAw19lfif1liwa8WrqxRyMItuUp1xEo6shTDCNEUNdQtsEGg==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      '@vercel/node': ^1.8.3 || ^2.4.0
 
   '@remix-run/web-blob@3.1.0':
     resolution: {integrity: sha512-owGzFLbqPH9PlKb8KvpNJ0NO74HWE2euAn61eEiyCXX/oteoVzTVSN8mpLgDjaxBf2btj5/nUllSUgpyd6IH6g==}
@@ -1952,9 +1934,6 @@ packages:
 
   '@types/acorn@4.0.6':
     resolution: {integrity: sha512-veQTnWP+1D/xbxVrPC3zHnCZRjSrKfhbMUlEA43iMZLu7EsnTtkJklIuwrCPbOi8YkvDQAiW05VQQFvvz9oieQ==}
-
-  '@types/cookie@0.4.1':
-    resolution: {integrity: sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==}
 
   '@types/cookie@0.6.0':
     resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
@@ -2247,6 +2226,16 @@ packages:
 
   '@vercel/node@5.1.14':
     resolution: {integrity: sha512-kLXAR4ZtNSXJw5ffIzKPDAVHD4/Dwxw/287ZCnQlqtOQzY3IH1E5QM3nxn0LGfTkYxXpQFFOOcXL7fZW7MjC6A==}
+
+  '@vercel/remix@2.15.3':
+    resolution: {integrity: sha512-t6dh8j93CnlE/sd/hnutsMKYoogGmYbm+pkykJ/i6mWmEs2dqJMOhaV5axS3bVD1N+5ltyTR1vgk+D0y9tp9Og==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      '@remix-run/dev': 2.15.3
+      '@remix-run/node': 2.15.3
+      '@remix-run/server-runtime': 2.15.3
+      react: '*'
+      react-dom: '*'
 
   '@vercel/static-config@3.0.0':
     resolution: {integrity: sha512-2qtvcBJ1bGY0dYGYh3iM7yGKkk971FujLEDXzuW5wcZsPr1GSEjO/w2iSr3qve6nDDtBImsGoDEnus5FI4+fIw==}
@@ -2791,10 +2780,6 @@ packages:
   cookie-signature@1.2.2:
     resolution: {integrity: sha512-D76uU73ulSXrD1UXF4KE2TMxVVwhsnCgfAyTg9k8P6KGZjlXKrOLe4dJQKI3Bxi5wjesZoFXJWElNWBjPZMbhg==}
     engines: {node: '>=6.6.0'}
-
-  cookie@0.4.2:
-    resolution: {integrity: sha512-aSWTXFzaKWkvHO1Ny/s+ePFpvKsPnjc551iI41v3ny/ow6tBG5Vd+FuqGNhh1LxOmVzOlGUriIlOaokOvhaStA==}
-    engines: {node: '>= 0.6'}
 
   cookie@0.6.0:
     resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
@@ -4011,6 +3996,10 @@ packages:
 
   isarray@2.0.5:
     resolution: {integrity: sha512-xHjhDr3cNBK0BzdUJSPXZntQUx/mwMS5Rw4A7lPJ90XGAO6ISP/ePDNuo0vhqOZU+UD5JoodwCAAoZQd3FeAKw==}
+
+  isbot@3.8.0:
+    resolution: {integrity: sha512-vne1mzQUTR+qsMLeCBL9+/tgnDXRyc2pygLGl/WsgA+EZKIiB5Ehu0CiVTHIIk30zhJ24uGz4M5Ppse37aR0Hg==}
+    engines: {node: '>=12'}
 
   isbot@4.4.0:
     resolution: {integrity: sha512-8ZvOWUA68kyJO4hHJdWjyreq7TYNWTS9y15IzeqVdKxR9pPr3P/3r9AHcoIv9M0Rllkao5qWz2v1lmcyKIVCzQ==}
@@ -7842,18 +7831,6 @@ snapshots:
     optionalDependencies:
       typescript: 5.8.2
 
-  '@remix-run/node@1.19.3':
-    dependencies:
-      '@remix-run/server-runtime': 1.19.3
-      '@remix-run/web-fetch': 4.4.2
-      '@remix-run/web-file': 3.1.0
-      '@remix-run/web-stream': 1.1.0
-      '@web3-storage/multipart-parser': 1.0.0
-      abort-controller: 3.0.0
-      cookie-signature: 1.2.2
-      source-map-support: 0.5.21
-      stream-slice: 0.1.2
-
   '@remix-run/node@2.16.2(typescript@5.8.2)':
     dependencies:
       '@remix-run/server-runtime': 2.16.2(typescript@5.8.2)
@@ -7880,17 +7857,6 @@ snapshots:
 
   '@remix-run/router@1.23.0': {}
 
-  '@remix-run/router@1.7.2': {}
-
-  '@remix-run/server-runtime@1.19.3':
-    dependencies:
-      '@remix-run/router': 1.7.2
-      '@types/cookie': 0.4.1
-      '@web3-storage/multipart-parser': 1.0.0
-      cookie: 0.4.2
-      set-cookie-parser: 2.7.1
-      source-map: 0.7.4
-
   '@remix-run/server-runtime@2.16.2(typescript@5.8.2)':
     dependencies:
       '@remix-run/router': 1.23.0
@@ -7902,11 +7868,6 @@ snapshots:
       turbo-stream: 2.4.0
     optionalDependencies:
       typescript: 5.8.2
-
-  '@remix-run/vercel@1.19.3(@vercel/node@5.1.14(rollup@4.36.0))':
-    dependencies:
-      '@remix-run/node': 1.19.3
-      '@vercel/node': 5.1.14(rollup@4.36.0)
 
   '@remix-run/web-blob@3.1.0':
     dependencies:
@@ -8143,8 +8104,6 @@ snapshots:
   '@types/acorn@4.0.6':
     dependencies:
       '@types/estree': 1.0.6
-
-  '@types/cookie@0.4.1': {}
 
   '@types/cookie@0.6.0': {}
 
@@ -8617,6 +8576,17 @@ snapshots:
       - encoding
       - rollup
       - supports-color
+
+  '@vercel/remix@2.15.3(@remix-run/dev@2.16.2(@remix-run/react@2.16.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.2))(@types/node@16.18.11)(sass-embedded@1.86.0)(ts-node@10.9.1(@types/node@16.18.11)(typescript@5.8.2))(typescript@5.8.2)(vite@5.4.14(@types/node@16.18.11)(sass-embedded@1.86.0)))(@remix-run/node@2.16.2(typescript@5.8.2))(@remix-run/server-runtime@2.16.2(typescript@5.8.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@remix-run/dev': 2.16.2(@remix-run/react@2.16.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.2))(@types/node@16.18.11)(sass-embedded@1.86.0)(ts-node@10.9.1(@types/node@16.18.11)(typescript@5.8.2))(typescript@5.8.2)(vite@5.4.14(@types/node@16.18.11)(sass-embedded@1.86.0))
+      '@remix-run/node': 2.16.2(typescript@5.8.2)
+      '@remix-run/server-runtime': 2.16.2(typescript@5.8.2)
+      '@vercel/static-config': 3.0.0
+      isbot: 3.8.0
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      ts-morph: 12.0.0
 
   '@vercel/static-config@3.0.0':
     dependencies:
@@ -9224,8 +9194,6 @@ snapshots:
   cookie-signature@1.0.6: {}
 
   cookie-signature@1.2.2: {}
-
-  cookie@0.4.2: {}
 
   cookie@0.6.0: {}
 
@@ -10688,6 +10656,8 @@ snapshots:
   isarray@1.0.0: {}
 
   isarray@2.0.5: {}
+
+  isbot@3.8.0: {}
 
   isbot@4.4.0: {}
 
