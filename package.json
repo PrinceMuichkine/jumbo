@@ -7,7 +7,7 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "deploy": "pnpm install --no-frozen-lockfile && pnpm run build && wrangler pages deploy ./dist",
+    "deploy": "pnpm install --no-frozen-lockfile && pnpm run build && wrangler pages deploy build/client --project-name jumbo",
     "build": "remix vite:build",
     "dev": "remix vite:dev",
     "test": "vitest --run",
@@ -104,7 +104,7 @@
     "vite-plugin-optimize-css-modules": "^1.2.0",
     "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^2.1.9",
-    "wrangler": "^4.2.0",
+    "wrangler": "^3.114.2",
     "zod": "^3.24.2"
   },
   "resolutions": {
