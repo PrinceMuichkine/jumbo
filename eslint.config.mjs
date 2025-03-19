@@ -24,7 +24,6 @@ export default [
     ignores: [
       '**/dist',
       '**/node_modules',
-      '**/.wrangler',
       '**/jumbo/build',
       '**/.cursor',
       '**/.cursor/**',

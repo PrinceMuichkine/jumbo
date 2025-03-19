@@ -1,4 +1,4 @@
-import { json, type LoaderFunctionArgs } from '@remix-run/cloudflare';
+import { json, type LoaderFunctionArgs } from '@remix-run/node';
 import { default as IndexRoute } from './_index';
 
 // Loader function that extracts the chat ID from params

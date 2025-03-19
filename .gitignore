@@ -37,6 +37,4 @@ dist-ssr
 ## Environment
 .env*
 *.vars
-.wrangler
-_worker.bundle
 /data

@@ -1,4 +1,4 @@
-import { type ActionFunctionArgs } from '@remix-run/cloudflare';
+import { type ActionFunctionArgs } from '@remix-run/node';
 import { StreamingTextResponse, parseStreamPart } from 'ai';
 import { streamText } from '@/lib/.server/llm/stream-text';
 import { stripIndents } from '@/utils/stripIndent';
@@ -10,8 +10,8 @@ export async function action(args: ActionFunctionArgs) {
   return enhancerAction(args);
 }
 
-async function enhancerAction({ context, request }: ActionFunctionArgs) {
-  const { message } = await request.json<{ message: string }>();
+async function enhancerAction({ request }: ActionFunctionArgs) {
+  const { message } = await request.json() as { message: string };
 
   try {
     const result = await streamText(
@@ -29,7 +29,6 @@ async function enhancerAction({ context, request }: ActionFunctionArgs) {
         `,
         },
       ],
-      context.cloudflare.env,
     );
 
     const transformStream = new TransformStream({

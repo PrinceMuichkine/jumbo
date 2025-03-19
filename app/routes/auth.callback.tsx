@@ -1,4 +1,4 @@
-import { redirect } from '@remix-run/cloudflare';
+import { redirect } from '@remix-run/node';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { SIGNIN_EVENT } from '@/lib/contexts/UserEvents';
 import { toast } from '@/lib/hooks/use-toast';

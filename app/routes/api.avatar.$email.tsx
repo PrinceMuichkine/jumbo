@@ -1,4 +1,4 @@
-import type { LoaderFunctionArgs } from "@remix-run/cloudflare";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 
 /**
  * This route acts as a proxy for Vercel's avatar service to avoid CORS issues
