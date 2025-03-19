@@ -36,3 +36,8 @@ body {
   bottom: 0;
   overflow: hidden;
 }
+
+// Simple style for body when modal is open
+body.modal-open {
+  overflow: hidden;
+}

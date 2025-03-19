@@ -19,6 +19,9 @@ export function AuthSuccessHandler({ userId, userMetadata }: { userId: string, u
           }
         });
         window.dispatchEvent(signInEvent);
+
+        // Force a page reload after dispatching the event to ensure UI is updated
+        window.location.href = '/';
       } catch (error) {
         console.error('Error dispatching sign-in event:', error);
       }
@@ -32,9 +35,39 @@ export const loader = async ({ request }: { request: Request }) => {
   const response = new Response();
   const url = new URL(request.url);
   const code = url.searchParams.get('code');
+  const type = url.searchParams.get('type');
   let userId = '';
   let userMetadata = '';
 
+  // Special case for password recovery
+  if (type === 'recovery' && code) {
+    // For password recovery, we'll redirect to a special route that allows password reset
+    try {
+      const supabase = createSupabaseServerClient({ request, response });
+
+      // First exchange the code for a session
+      const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+
+      if (error) {
+        console.error('Error exchanging recovery code for session:', error);
+        return redirect('/?auth_error=recovery_failed', {
+          headers: response.headers,
+        });
+      }
+
+      // If successful, redirect to password reset page
+      return redirect('/reset-password', {
+        headers: response.headers,
+      });
+    } catch (error) {
+      console.error('Error in recovery flow:', error);
+      return redirect('/?auth_error=recovery_error', {
+        headers: response.headers,
+      });
+    }
+  }
+
+  // Normal auth callback flow (sign in/sign up)
   if (code) {
     try {
       const supabase = createSupabaseServerClient({ request, response });
@@ -63,6 +96,11 @@ export const loader = async ({ request }: { request: Request }) => {
 
         // Safely encode user metadata as JSON string for URL
         userMetadata = encodeURIComponent(JSON.stringify(metadata));
+
+        // Set cookies for session in the response headers
+        return redirect('/', {
+          headers: response.headers,
+        });
       }
     } catch (error) {
       console.error('Error in auth callback:', error);
@@ -74,8 +112,7 @@ export const loader = async ({ request }: { request: Request }) => {
   }
 
   // Append special reload parameter to ensure the page refreshes immediately
-  // The force_reload=true makes the client-side code reload the page
-  return redirect(`/?auth_success=true&userId=${userId}&userMetadata=${userMetadata}`, {
+  return redirect('/', {
     headers: response.headers,
   });
 };
