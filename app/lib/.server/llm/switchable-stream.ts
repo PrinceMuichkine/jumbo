@@ -5,11 +5,6 @@ type TransformStreamDefaultController = {
   terminate: () => void;
 };
 
-// Use the global TransformStream to avoid polyfill conflicts
-const GlobalTransformStream = globalThis.TransformStream ||
-                             // @ts-ignore - Fallback for older environments
-                             require('web-streams-polyfill').TransformStream;
-
 export default class SwitchableStream {
   private _controller: TransformStreamDefaultController | null = null;
   private _currentReader: any = null; // Use any to avoid typing issues with ReadableStreamDefaultReader
@@ -19,7 +14,9 @@ export default class SwitchableStream {
   constructor() {
     let controllerRef: TransformStreamDefaultController | null = null;
 
-    this._transformStream = new GlobalTransformStream({
+    // Create a standard TransformStream without relying on global objects
+    // This fixes the compatibility issue in production environments
+    this._transformStream = new TransformStream({
       start(controller: TransformStreamDefaultController) {
         controllerRef = controller;
       },

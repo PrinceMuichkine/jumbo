@@ -31,25 +31,40 @@ async function enhancerAction({ request }: ActionFunctionArgs) {
       ],
     );
 
+    // Use a standard TransformStream construction that works consistently
+    // in both development and production environments
     const transformStream = new TransformStream({
       transform(chunk, controller) {
-        const processedChunk = decoder
-          .decode(chunk)
-          .split('\n')
-          .filter((line) => line !== '')
-          .map(parseStreamPart)
-          .map((part) => part.value)
-          .join('');
+        try {
+          const processedChunk = decoder
+            .decode(chunk)
+            .split('\n')
+            .filter((line) => line !== '')
+            .map(parseStreamPart)
+            .map((part) => part.value)
+            .join('');
 
-        controller.enqueue(encoder.encode(processedChunk));
+          controller.enqueue(encoder.encode(processedChunk));
+        } catch (error) {
+          console.error('Error in transform stream:', error);
+          controller.error(error);
+        }
       },
     });
 
-    const transformedStream = result.toAIStream().pipeThrough(transformStream);
-
-    return new StreamingTextResponse(transformedStream);
+    // Ensure we have proper error handling for the stream piping
+    try {
+      const transformedStream = result.toAIStream().pipeThrough(transformStream);
+      return new StreamingTextResponse(transformedStream);
+    } catch (error) {
+      console.error('Error in stream transformation:', error);
+      throw new Response(null, {
+        status: 500,
+        statusText: 'Error transforming stream',
+      });
+    }
   } catch (error) {
-    console.log(error);
+    console.error('Error in enhancer action:', error);
 
     throw new Response(null, {
       status: 500,

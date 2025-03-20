@@ -2,9 +2,6 @@
 
 Jumbo is an AI-powered web development agent that allows you to prompt, run, edit, and deploy full-stack applications directly from your browser—no local setup required. If you're here to build your own AI-powered web dev agent using the Jumbo open source codebase, [click here to get started!](./CONTRIBUTING.md)
 
-## What Makes Jumbo Different
-
-Claude, v0, etc are incredible- but you can't install packages, run backends or edit code. That’s where Jumbo stands out:
 
 - **Full-Stack in the Browser**: Jumbo integrates cutting-edge AI models with an in-browser development environment powered by **lomi.’s WebContainers**. This allows you to:
   - Install and run npm tools and libraries (like Vite, Next.js, and more)
