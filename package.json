@@ -87,7 +87,8 @@
     "server-build": "link:@remix-run/dev/server-build",
     "shiki": "^1.29.2",
     "tailwind-merge": "^3.0.2",
-    "unist-util-visit": "^5.0.0"
+    "unist-util-visit": "^5.0.0",
+    "web-streams-polyfill": "^3.2.1"
   },
   "devDependencies": {
     "@blitz/eslint-plugin": "0.1.0",
