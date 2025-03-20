@@ -33,7 +33,7 @@ export function ReferralModal({ open, onOpenChange }: ReferralModalProps) {
                 <input
                   type="text"
                   readOnly
-                  value="https://jumbo.dev/ref/12345"
+                  value="https://jumbo.lomi.africa/ref/12345"
                   className="flex-1 bg-jumbo-elements-bg-depth-2 dark:bg-gray-800 border border-jumbo-elements-borderColor rounded-l-md px-3 py-2 text-sm text-jumbo-elements-textPrimary"
                 />
                 <motion.button

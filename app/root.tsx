@@ -14,6 +14,7 @@ import { TranslationProvider } from '@/lib/contexts/TranslationContext';
 import { UserProvider } from '@/lib/contexts/UserContext';
 import { SIGNIN_EVENT } from '@/lib/contexts/UserEvents';
 import { Analytics } from '@vercel/analytics/remix';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/middleware/env';
 
 import reactToastifyStyles from 'react-toastify/dist/ReactToastify.css?url';
 import globalStyles from './styles/index.scss?url';
@@ -79,8 +80,8 @@ export const loader = async ({ request, context }: LoaderFunctionArgs) => {
   const accessToken = session?.access_token || null;
 
   const env = {
-    SUPABASE_URL: process.env.VITE_SUPABASE_URL || '',
-    SUPABASE_ANON_KEY: process.env.VITE_SUPABASE_ANON_KEY || '',
+    SUPABASE_URL: SUPABASE_URL,
+    SUPABASE_ANON_KEY: SUPABASE_ANON_KEY,
   };
 
   return json(

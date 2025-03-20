@@ -15,6 +15,9 @@ import { useUser } from '@/lib/contexts/UserContext';
 import { SIGNOUT_EVENT, SIGNIN_EVENT } from '@/lib/contexts/UserEvents';
 import type { User } from '@supabase/supabase-js';
 
+// Import supabase-user-fixes.d.ts to make TS aware of the email property
+import '@/lib/types/supabase-user-fixes';
+
 const menuVariants = {
   closed: {
     opacity: 0,
@@ -168,7 +171,7 @@ export function Menu() {
   };
 
   const openHelpCenter = () => {
-    window.open('https://help.jumbo.dev', '_blank');
+    window.open('https://help.jumbo.lomi.africa', '_blank');
   };
 
   // Check if we're on the home page
@@ -354,7 +357,7 @@ export function Menu() {
 
                     // Use our proxy route for Vercel avatar
                     <img
-                      src={`/api/avatar/${encodeURIComponent(localUser.email?.toLowerCase() || '')}?rounded=true`}
+                      src={`/api/avatar/${encodeURIComponent((localUser.email ?? '').toLowerCase())}?rounded=true`}
                       alt="Generated avatar"
                       className="h-full w-full object-cover"
                     />
@@ -362,9 +365,9 @@ export function Menu() {
                 </div>
                 <div className="ml-2 overflow-hidden">
                   <p className="text-sm font-medium text-jumbo-elements-textPrimary truncate">
-                    {localUser.user_metadata?.full_name || localUser.email?.split('@')[0] || 'User'}
+                    {localUser.user_metadata?.full_name || (localUser.email && localUser.email.split('@')[0]) || 'User'}
                   </p>
-                  <p className="text-xs text-jumbo-elements-textSecondary truncate">{localUser.email}</p>
+                  <p className="text-xs text-jumbo-elements-textSecondary truncate">{localUser.email || ''}</p>
                 </div>
               </div>
             ) : localLoading ? (

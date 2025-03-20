@@ -34,7 +34,7 @@ Here are some tips to get the most out of Jumbo:
 ## FAQs
 
 **Where do I sign up for a paid plan?**  
-Jumbo is free to get started. If you need more AI tokens or want private projects, you can purchase a paid subscription in your [Jumbo](https://jumbo.dev) settings, in the lower-left hand corner of the application. 
+Jumbo is free to get started. If you need more AI tokens or want private projects, you can purchase a paid subscription in your [Jumbo](https://jumbo.lomi.africa) settings, in the lower-left hand corner of the application. 
 
 **What happens if I hit the free usage limit?**  
 Once your free daily token limit is reached, AI interactions are paused until the next day or until you upgrade your plan.
@@ -43,7 +43,7 @@ Once your free daily token limit is reached, AI interactions are paused until th
 Yes, Jumbo is in beta, and we are actively improving it based on feedback.
 
 **How can I report Jumbo issues?**  
-Check out the [Issues section](https://github.com/lomi./jumbo.dev/issues) to report an issue or request a new feature. Please use the search feature to check if someone else has already submitted the same issue/request.
+Check out the [Issues section](https://github.com/lomi./jumbo.lomi.africa/issues) to report an issue or request a new feature. Please use the search feature to check if someone else has already submitted the same issue/request.
 
 **What frameworks/libraries currently work on Jumbo?**  
 Jumbo supports most popular JavaScript frameworks and libraries. If it runs on lomi., it will run on Jumbo as well.

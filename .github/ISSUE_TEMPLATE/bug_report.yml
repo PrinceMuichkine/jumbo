@@ -38,7 +38,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        ![Making your project public](https://github.com/princemuichkine/jumbo.dev/blob/main/public/project-visibility.jpg?raw=true)
+        ![Making your project public](https://github.com/princemuichkine/jumbo.lomi.africa/blob/main/public/project-visibility.jpg?raw=true)
   - type: textarea
     id: steps
     attributes:

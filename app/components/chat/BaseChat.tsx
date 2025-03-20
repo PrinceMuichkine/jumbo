@@ -8,6 +8,7 @@ import { classNames } from '@/utils/classNames';
 import { Messages } from './Messages.client';
 import { SendButton } from './SendButton.client';
 
+// Import module CSS
 import styles from './BaseChat.module.scss';
 
 interface BaseChatProps {

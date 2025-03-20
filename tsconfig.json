@@ -35,6 +35,7 @@
     "**/.server/**/*.tsx",
     "**/.client/**/*.ts",
     "**/.client/**/*.tsx",
+    "app/lib/types/supabase-user-fixes.d.ts",
     "../app/components/ui/button-expand.tsx",
     "../app/components/ui/button-variants.ts",
     "../app/components/ui/button.tsx",
