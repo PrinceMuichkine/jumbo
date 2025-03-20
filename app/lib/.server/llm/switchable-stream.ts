@@ -1,20 +1,29 @@
-export default class SwitchableStream extends TransformStream {
+// Define types locally to avoid dependency on web-streams-polyfill package
+type TransformStreamDefaultController = {
+  enqueue: (chunk: any) => void;
+  error: (reason: any) => void;
+  terminate: () => void;
+};
+
+// Use the global TransformStream to avoid polyfill conflicts
+const GlobalTransformStream = globalThis.TransformStream ||
+                             // @ts-ignore - Fallback for older environments
+                             require('web-streams-polyfill').TransformStream;
+
+export default class SwitchableStream {
   private _controller: TransformStreamDefaultController | null = null;
-  private _currentReader: ReadableStreamDefaultReader | null = null;
+  private _currentReader: any = null; // Use any to avoid typing issues with ReadableStreamDefaultReader
   private _switches = 0;
+  private _transformStream: any;
 
   constructor() {
-    let controllerRef: TransformStreamDefaultController | undefined;
+    let controllerRef: TransformStreamDefaultController | null = null;
 
-    super({
-      start(controller) {
+    this._transformStream = new GlobalTransformStream({
+      start(controller: TransformStreamDefaultController) {
         controllerRef = controller;
       },
     });
-
-    if (controllerRef === undefined) {
-      throw new Error('Controller not properly initialized');
-    }
 
     this._controller = controllerRef;
   }
@@ -25,9 +34,7 @@ export default class SwitchableStream extends TransformStream {
     }
 
     this._currentReader = newStream.getReader();
-
     this._pumpStream();
-
     this._switches++;
   }
 
@@ -47,20 +54,34 @@ export default class SwitchableStream extends TransformStream {
         this._controller.enqueue(value);
       }
     } catch (error) {
-      console.log(error);
-      this._controller.error(error);
+      console.error('Error in SwitchableStream:', error);
+      if (this._controller) {
+        this._controller.error(error);
+      }
     }
   }
 
   close() {
     if (this._currentReader) {
-      this._currentReader.cancel();
+      this._currentReader.cancel().catch((err: Error) => {
+        console.error('Error cancelling reader:', err);
+      });
     }
 
-    this._controller?.terminate();
+    if (this._controller) {
+      try {
+        this._controller.terminate();
+      } catch (err: unknown) {
+        console.error('Error terminating controller:', err);
+      }
+    }
   }
 
   get switches() {
     return this._switches;
+  }
+
+  get readable() {
+    return this._transformStream.readable;
   }
 }
