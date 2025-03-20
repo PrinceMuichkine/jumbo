@@ -15,9 +15,6 @@ import { useUser } from '@/lib/contexts/UserContext';
 import { SIGNOUT_EVENT, SIGNIN_EVENT } from '@/lib/contexts/UserEvents';
 import type { User } from '@supabase/supabase-js';
 
-// Import supabase-user-fixes.d.ts to make TS aware of the email property
-import '@/lib/types/supabase-user-fixes';
-
 const menuVariants = {
   closed: {
     opacity: 0,
