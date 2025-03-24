@@ -28,21 +28,16 @@ export interface Env {
 
 export function streamText(messages: Messages, env?: Env, options?: StreamingOptions) {
   // Get API key from env parameter or use process.env
-  const apiKey = getAPIKey(env);
+  const apiKey = env?.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY;
 
-  try {
-    return _streamText({
-      model: getAnthropicModel(apiKey ? { ANTHROPIC_API_KEY: apiKey } : undefined),
-      system: getSystemPrompt(),
-      maxTokens: MAX_TOKENS,
-      headers: {
-        'anthropic-beta': 'max-tokens-3-5-sonnet-2024-07-15',
-      },
-      messages: convertToCoreMessages(messages),
-      ...options,
-    });
-  } catch (error) {
-    console.error('Error in streamText:', error);
-    throw error;
-  }
+  return _streamText({
+    model: getAnthropicModel(apiKey ? { ANTHROPIC_API_KEY: apiKey } : undefined),
+    system: getSystemPrompt(),
+    maxTokens: MAX_TOKENS,
+    headers: {
+      'anthropic-beta': 'max-tokens-3-5-sonnet-2024-07-15',
+    },
+    messages: convertToCoreMessages(messages),
+    ...options,
+  });
 }
