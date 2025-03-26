@@ -10,7 +10,13 @@
     "placeholder": "Demandez n'importe quoi à Jumbo...",
     "loading": "Chargement...",
     "new_chat": "Nouvelle conversation",
-    "token_usage": "Utilisation de jetons: {{count}}"
+    "token_usage": "Utilisation de jetons: {{count}}",
+    "heading": "Que puis-je vous aider à créer ?"
+  },
+  "disclaimer": {
+    "title": "Nous sommes en développement",
+    "message": "Jumbo est encore en développement. Nous travaillons dur pour vous offrir la meilleure expérience possible. Merci de revenir dans quelques heures.",
+    "button": "Compris"
   },
   "settings": {
     "general": "Général",

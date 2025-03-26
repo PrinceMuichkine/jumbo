@@ -7,6 +7,7 @@ import { t } from '@/lib/i18n/translations';
 import { PHICON } from '@/components/icons/PHIcon';
 import { cn } from '@/lib/actions/utils';
 import { Link } from '@remix-run/react';
+import { useEffect, useState } from 'react';
 
 const LinkedInIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
@@ -17,6 +18,24 @@ const LinkedInIcon = () => (
 
 export function Footer({ className }: { className?: string }) {
   const { currentLanguage } = useTranslation();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Check if mobile
+    const mobileMediaQuery = window.matchMedia('(max-width: 768px)');
+    setIsMobile(mobileMediaQuery.matches);
+
+    // Listen for changes
+    const handleMobileChange = (e: MediaQueryListEvent) => {
+      setIsMobile(e.matches);
+    };
+
+    mobileMediaQuery.addEventListener('change', handleMobileChange);
+
+    return () => {
+      mobileMediaQuery.removeEventListener('change', handleMobileChange);
+    };
+  }, []);
 
   return (
     <nav
@@ -28,7 +47,7 @@ export function Footer({ className }: { className?: string }) {
       style={{ boxShadow: 'none' }}
     >
       <div className="max-w-7xl mx-auto px-4 md:px-8 w-full">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between lg:justify-between">
           <div className="hidden lg:flex items-center text-xs text-jumbo-elements-textSecondary font-inter">
             <Link
               to="https://lomi.africa"
@@ -61,12 +80,12 @@ export function Footer({ className }: { className?: string }) {
             <div className="h-4 w-px bg-jumbo-elements-borderColor mx-4" />
             <LanguageSwitcher />
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-1 sm:space-x-4 ml-auto">
             <Link
               to="https://github.com/lomiafrica"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex text-jumbo-elements-textSecondary hover:text-[#6e5494] transition-colors"
+              className="inline-flex text-jumbo-elements-textSecondary hover:text-[#6e5494] transition-colors px-1.5"
               aria-label="GitHub"
             >
               <GitHubIcon className="h-3.5 w-3.5" />
@@ -76,7 +95,7 @@ export function Footer({ className }: { className?: string }) {
               to="https://x.com/lomiafrica"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-jumbo-elements-textSecondary hover:text-black dark:hover:text-white transition-colors"
+              className="text-jumbo-elements-textSecondary hover:text-black dark:hover:text-white transition-colors px-1.5"
               aria-label="X/Twitter"
             >
               <XICON className="h-3.5 w-3.5 fill-current -translate-y-[0.5px]" />
@@ -86,7 +105,7 @@ export function Footer({ className }: { className?: string }) {
               to="https://www.producthunt.com/products/lomi"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-jumbo-elements-textSecondary hover:text-[#DA552F] transition-colors"
+              className="text-jumbo-elements-textSecondary hover:text-[#DA552F] transition-colors px-1.5"
               aria-label="Product Hunt"
             >
               <PHICON className="h-4 w-4 fill-current -translate-y-[0.5px]" />
@@ -96,29 +115,29 @@ export function Footer({ className }: { className?: string }) {
               to="https://www.linkedin.com/company/lomiafri"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-jumbo-elements-textSecondary hover:text-[#0A66C2] transition-colors"
+              className="text-jumbo-elements-textSecondary hover:text-[#0A66C2] transition-colors px-1.5"
               aria-label="LinkedIn"
             >
               <LinkedInIcon />
             </Link>
             <div className="h-4 w-px bg-jumbo-elements-borderColor"></div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <Link
                 to="https://lomi.africa/faq"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-jumbo-elements-textSecondary hover:text-jumbo-elements-textPrimary transition-colors text-xs font-medium"
+                className="text-jumbo-elements-textSecondary hover:text-jumbo-elements-textPrimary transition-colors text-xs font-medium px-1.5"
               >
-                {t(currentLanguage, 'footer.faq')}
+                {isMobile ? "FAQ" : t(currentLanguage, 'footer.faq')}
               </Link>
               <div className="h-4 w-px bg-jumbo-elements-borderColor"></div>
               <Link
                 to="https://lomi.africa/privacy"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-jumbo-elements-textSecondary hover:text-jumbo-elements-textPrimary transition-colors text-xs font-medium"
+                className="text-jumbo-elements-textSecondary hover:text-jumbo-elements-textPrimary transition-colors text-xs font-medium px-1.5"
               >
-                {t(currentLanguage, 'footer.privacy')}
+                {isMobile ? "Privacy" : t(currentLanguage, 'footer.privacy')}
               </Link>
               <div className="h-4 w-px bg-jumbo-elements-borderColor hidden lg:block"></div>
               <div className="hidden lg:block">
@@ -126,7 +145,7 @@ export function Footer({ className }: { className?: string }) {
                   to="https://lomi.africa/terms"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-jumbo-elements-textSecondary hover:text-jumbo-elements-textPrimary transition-colors text-xs font-medium"
+                  className="text-jumbo-elements-textSecondary hover:text-jumbo-elements-textPrimary transition-colors text-xs font-medium px-1.5"
                 >
                   {t(currentLanguage, 'footer.terms')}
                 </Link>

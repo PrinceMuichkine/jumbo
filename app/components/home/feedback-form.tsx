@@ -45,7 +45,7 @@ export default function FeedbackForm() {
       return
     }
 
-    if (isSubmitting) {return}
+    if (isSubmitting) { return }
 
     setIsSubmitting(true)
 
@@ -55,7 +55,7 @@ export default function FeedbackForm() {
         p_message: feedback
       })
 
-      if (error) {throw error}
+      if (error) { throw error }
 
       alert(t(currentLanguage, 'feedback_form.thanks'))
       setFeedback('')
@@ -94,7 +94,7 @@ export default function FeedbackForm() {
                     <button
                       key={key}
                       onClick={() => setSentiment(key)}
-                      className={`text-lg p-1 ${sentiment === key ? 'bg-jumbo-elements-bg-depth-2 dark:bg-gray-700 rounded-md' : ''}`}
+                      className={`text-lg p-1 rounded-md ${sentiment === key ? 'bg-jumbo-elements-bg-depth-2/50 dark:bg-gray-700/50 ring-1 ring-jumbo-elements-borderColor' : 'bg-transparent hover:bg-jumbo-elements-bg-depth-2/20 dark:hover:bg-gray-700/20'}`}
                     >
                       {emojis[key]}
                     </button>
