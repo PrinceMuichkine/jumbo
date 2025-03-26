@@ -42,11 +42,12 @@ export function Footer({ className }: { className?: string }) {
       className={cn(
         "bg-jumbo-elements-background-depth-1 relative z-50 h-7 flex items-center justify-center",
         "border-t-0 shadow-none",
+        "footer",
         className
       )}
       style={{ boxShadow: 'none' }}
     >
-      <div className="max-w-7xl mx-auto px-4 md:px-8 w-full">
+      <div className="max-w-[90rem] mx-auto px-5 md:px-10 w-full">
         <div className="flex items-center justify-between lg:justify-between">
           <div className="hidden lg:flex items-center text-xs text-jumbo-elements-textSecondary font-inter">
             <Link
@@ -57,7 +58,7 @@ export function Footer({ className }: { className?: string }) {
             >
               {t(currentLanguage, 'footer.copyright')}
             </Link>
-            <div className="h-4 w-px bg-jumbo-elements-borderColor mx-4" />
+            <div className="h-4 w-px bg-jumbo-elements-borderColor mx-5" />
             <Link
               to="https://lomi.africa/blog"
               target="_blank"
@@ -66,9 +67,9 @@ export function Footer({ className }: { className?: string }) {
             >
               {t(currentLanguage, 'footer.blog')}
             </Link>
-            <div className="h-4 w-px bg-jumbo-elements-borderColor mx-4" />
+            <div className="h-4 w-px bg-jumbo-elements-borderColor mx-5" />
             <FeedbackForm />
-            <div className="h-4 w-px bg-jumbo-elements-borderColor mx-4" />
+            <div className="h-4 w-px bg-jumbo-elements-borderColor mx-5" />
             <Link
               to="https://www.producthunt.com/products/lomi/reviews"
               target="_blank"
@@ -77,10 +78,10 @@ export function Footer({ className }: { className?: string }) {
             >
               {t(currentLanguage, 'footer.recommend')}
             </Link>
-            <div className="h-4 w-px bg-jumbo-elements-borderColor mx-4" />
+            <div className="h-4 w-px bg-jumbo-elements-borderColor mx-5" />
             <LanguageSwitcher />
           </div>
-          <div className="flex items-center space-x-1 sm:space-x-4 ml-auto">
+          <div className="flex items-center space-x-2 sm:space-x-4 ml-auto">
             <Link
               to="https://github.com/lomiafrica"
               target="_blank"

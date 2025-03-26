@@ -7,11 +7,18 @@
     "sign_out": "Sign Out"
   },
   "chat": {
-    "placeholder": "Ask Jumbo anything...",
+    "placeholder": "Describe your dream app or just drop an image",
     "loading": "Loading...",
     "new_chat": "New Chat",
     "token_usage": "Token usage: {{count}}",
-    "heading": "What can I help you build?"
+    "heading": "What can I help you build?",
+    "example_prompts": {
+      "payment_app": "Create an app with lomi. payment stack",
+      "checkout_form": "Create an awesome checkout form",
+      "lomi_setup": "Set up lomi. for end customers",
+      "todo_app": "Build a todo app in React using Tailwind",
+      "game": "Develop a Space Invaders-style game"
+    }
   },
   "disclaimer": {
     "title": "We're under development",

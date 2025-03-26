@@ -37,7 +37,55 @@ body {
   overflow: hidden;
 }
 
-// Simple style for body when modal is open
+// Enhanced style for body when modal is open
 body.modal-open {
   overflow: hidden;
+
+  // Style for footer when modal is open
+  nav.footer, nav[class*="footer"], footer, .footer {
+    opacity: 0.3 !important;
+    filter: blur(1px);
+    pointer-events: none;
+    transition: opacity 0.3s ease, filter 0.3s ease;
+    z-index: 10 !important; // Lower z-index when modal is open
+
+    // Ensure footer maintains its dark background in dark mode
+    &.bg-jumbo-elements-background-depth-1 {
+      background-color: var(--jumbo-elements-background-depth-1) !important;
+    }
+  }
+}
+
+// Modal overlay styles
+.fixed.inset-0[class*="bg-black"][class*="bg-opacity"] {
+  z-index: 9999 !important; // Ensure modal overlay is on top of everything
+}
+
+// Modal animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

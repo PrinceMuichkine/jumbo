@@ -9,6 +9,8 @@ import { Messages } from './Messages.client';
 import { SendButton } from './SendButton.client';
 import { useTranslation } from '@/lib/contexts/TranslationContext';
 import { t } from '@/lib/i18n/translations';
+import { useStore } from '@nanostores/react';
+import { themeStore } from '@/lib/stores/theme';
 
 // Import module CSS
 import styles from './BaseChat.module.scss';
@@ -32,11 +34,25 @@ interface BaseChatProps {
 
 // Disclaimer Modal component
 const DisclaimerModal = ({ isOpen, onClose, currentLanguage }: { isOpen: boolean; onClose: () => void; currentLanguage: string }) => {
+  // Add effect to handle body class for modal open state
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-jumbo-elements-background-depth-1 rounded-lg shadow-xl max-w-md w-full p-4 sm:p-6 border border-jumbo-elements-borderColor">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 animate-fadeIn" style={{ backdropFilter: 'blur(1px)' }}>
+      <div className="bg-white dark:bg-gray-950 rounded-lg shadow-xl max-w-md w-full p-4 sm:p-6 border border-jumbo-elements-borderColor animate-scaleIn">
         <h2 className="text-lg font-bold mb-3 text-jumbo-elements-textPrimary">
           {t(currentLanguage, 'disclaimer.title') || "We're under development"}
         </h2>
@@ -56,25 +72,26 @@ const DisclaimerModal = ({ isOpen, onClose, currentLanguage }: { isOpen: boolean
   );
 };
 
-const EXAMPLE_PROMPTS = [
+// Replaced with a function to get translated prompts
+const getExamplePrompts = (currentLanguage: string) => [
   {
-    text: 'Create an app with lomi. payment stack',
+    text: t(currentLanguage, 'chat.example_prompts.payment_app'),
     color: 'bg-jumbo-elements-button-primary-background hover:bg-jumbo-elements-button-primary-backgroundHover text-jumbo-elements-button-primary-text'
   },
   {
-    text: 'Create an awesome checkout form',
+    text: t(currentLanguage, 'chat.example_prompts.checkout_form'),
     color: 'bg-jumbo-elements-button-primary-background hover:bg-jumbo-elements-button-primary-backgroundHover text-jumbo-elements-button-primary-text'
   },
   {
-    text: 'Set up lomi. for end customers',
+    text: t(currentLanguage, 'chat.example_prompts.lomi_setup'),
     color: 'bg-jumbo-elements-button-primary-background hover:bg-jumbo-elements-button-primary-backgroundHover text-jumbo-elements-button-primary-text'
   },
   {
-    text: 'Build a todo app in React using Tailwind',
+    text: t(currentLanguage, 'chat.example_prompts.todo_app'),
     color: 'bg-jumbo-elements-button-primary-background hover:bg-jumbo-elements-button-primary-backgroundHover text-jumbo-elements-button-primary-text'
   },
   {
-    text: 'Develop a Space Invaders-style game',
+    text: t(currentLanguage, 'chat.example_prompts.game'),
     color: 'bg-jumbo-elements-button-primary-background hover:bg-jumbo-elements-button-primary-backgroundHover text-jumbo-elements-button-primary-text'
   },
 ];
@@ -106,6 +123,13 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
     const [isDarkMode, setIsDarkMode] = useState(false);
     const { currentLanguage } = useTranslation();
     const [isMobile, setIsMobile] = useState(false);
+    const [mounted, setMounted] = useState(false);
+    const theme = useStore(themeStore);
+
+    // Set mounted state to true after component mounts
+    useEffect(() => {
+      setMounted(true);
+    }, []);
 
     // Detect dark mode and screen size
     useEffect(() => {
@@ -135,13 +159,19 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
       };
     }, []);
 
+    // Get translated example prompts
+    const examplePrompts = getExamplePrompts(currentLanguage);
+
     const handleSendMessage = (event: React.UIEvent, messageInput?: string) => {
       // Show disclaimer instead of sending message
       setDisclaimerOpen(true);
     };
 
     // Get only 3 example prompts for mobile
-    const displayPrompts = isMobile ? EXAMPLE_PROMPTS.slice(0, 3) : EXAMPLE_PROMPTS;
+    const displayPrompts = isMobile ? examplePrompts.slice(0, 3) : examplePrompts;
+
+    // Determine logo source based on theme
+    const logoSrc = theme === 'dark' ? "/icons/transparent.webp" : "/icons/transparent_dark.webp";
 
     return (
       <div
@@ -158,18 +188,18 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
           <div className={classNames(styles.Chat, 'flex flex-col flex-grow w-full max-w-full sm:max-w-3xl min-w-0 h-full px-2 sm:px-0')}>
             {!chatStarted && (
               <>
-                <div className="flex justify-center mt-16 sm:mt-12 md:mt-10">
+                <div className="flex justify-center mt-16 sm:mt-22 md:mt-20">
                   <ClientOnly>
-                    {() => (
+                    {() => mounted && (
                       <img
-                        src={isDarkMode ? "/icons/transparent.webp" : "/icons/transparent_dark.webp"}
+                        src={logoSrc}
                         alt="Lomi Logo"
                         className="h-16 sm:h-24 w-auto"
                       />
                     )}
                   </ClientOnly>
                 </div>
-                <div id="intro" className="mt-8 sm:mt-6 max-w-[98%] sm:max-w-xl mx-auto px-0 text-center">
+                <div id="intro" className="mt-8 sm:mt-10 max-w-[98%] sm:max-w-xl mx-auto px-0 text-center">
                   <h1 className="text-2xl sm:text-3xl md:text-4xl text-center font-bold text-jumbo-elements-textPrimary mb-8 sm:mb-6 mx-auto leading-tight">
                     {t(currentLanguage, 'chat.heading')}
                   </h1>
@@ -177,7 +207,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
               </>
             )}
             <div
-              className={classNames('pt-2 sm:pt-6 px-0 sm:px-6', {
+              className={classNames('pt-2 sm:pt-4 px-0 sm:px-6', {
                 'h-full flex flex-col': chatStarted,
               })}
             >
@@ -284,7 +314,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
               </div>
             </div>
             {!chatStarted && (
-              <div id="examples" className="relative w-full max-w-full sm:max-w-xl mx-auto mt-8 sm:mt-5 flex flex-col items-center pb-10 sm:pb-4">
+              <div id="examples" className="relative w-full max-w-full sm:max-w-xl mx-auto mt-5 sm:mt-8 flex flex-col items-center pb-10 sm:pb-4">
                 <div className="flex flex-wrap gap-2 justify-center px-0 sm:px-2 mx-auto w-full">
                   {displayPrompts.map((examplePrompt, index) => {
                     return (

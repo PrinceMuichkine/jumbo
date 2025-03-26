@@ -7,11 +7,18 @@
     "sign_out": "Déconnexion"
   },
   "chat": {
-    "placeholder": "Demandez n'importe quoi à Jumbo...",
+    "placeholder": "Décrivez votre app idéale ou ajoutez une image",
     "loading": "Chargement...",
     "new_chat": "Nouvelle conversation",
     "token_usage": "Utilisation de jetons: {{count}}",
-    "heading": "Que puis-je vous aider à créer ?"
+    "heading": "Que puis-je vous aider à créer ?",
+    "example_prompts": {
+      "payment_app": "Crée une app avec la stack paiement lomi.",
+      "checkout_form": "Crée un super formulaire de paiement",
+      "lomi_setup": "Configure lomi. end-customer portal",
+      "todo_app": "Construit une todo-app en React avec Tailwind",
+      "game": "Développe un jeu style Space Invaders"
+    }
   },
   "disclaimer": {
     "title": "Nous sommes en développement",
