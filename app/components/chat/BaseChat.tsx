@@ -1,5 +1,5 @@
 import type { Message } from 'ai';
-import React, { type RefCallback, useState, useEffect } from 'react';
+import React, { type RefCallback, useState, useEffect, useRef } from 'react';
 import { ClientOnly } from 'remix-utils/client-only';
 import { Menu } from '@/components/sidebar/Menu.client';
 import { IconButton } from '@/components/ui/IconButton';
@@ -124,11 +124,21 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
     const { currentLanguage } = useTranslation();
     const [isMobile, setIsMobile] = useState(false);
     const [mounted, setMounted] = useState(false);
+    const [imageLoaded, setImageLoaded] = useState(false);
     const theme = useStore(themeStore);
+    const darkLogoRef = useRef<HTMLImageElement>(null);
+    const lightLogoRef = useRef<HTMLImageElement>(null);
 
     // Set mounted state to true after component mounts
     useEffect(() => {
       setMounted(true);
+
+      // Preload both image versions
+      const preloadDarkLogo = new Image();
+      preloadDarkLogo.src = "/icons/transparent.webp";
+
+      const preloadLightLogo = new Image();
+      preloadLightLogo.src = "/icons/transparent_dark.webp";
     }, []);
 
     // Detect dark mode and screen size
@@ -172,6 +182,8 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
 
     // Determine logo source based on theme
     const logoSrc = theme === 'dark' ? "/icons/transparent.webp" : "/icons/transparent_dark.webp";
+    const logoWidth = isMobile ? 64 : 96;
+    const logoHeight = isMobile ? 64 : 96;
 
     return (
       <div
@@ -188,14 +200,29 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
           <div className={classNames(styles.Chat, 'flex flex-col flex-grow w-full max-w-full sm:max-w-3xl min-w-0 h-full px-2 sm:px-0')}>
             {!chatStarted && (
               <>
-                <div className="flex justify-center mt-16 sm:mt-22 md:mt-20">
+                <div className="flex justify-center mt-16 sm:mt-22 md:mt-20 relative" style={{ minHeight: `${logoHeight}px` }}>
                   <ClientOnly>
                     {() => mounted && (
-                      <img
-                        src={logoSrc}
-                        alt="Lomi Logo"
-                        className="h-16 sm:h-24 w-auto"
-                      />
+                      <>
+                        {!imageLoaded && (
+                          <div
+                            className="absolute inset-0 flex items-center justify-center"
+                            style={{ width: `${logoWidth}px`, height: `${logoHeight}px`, margin: '0 auto' }}
+                          >
+                            <div className="w-12 h-12 rounded-full animate-pulse bg-jumbo-elements-background-depth-2"></div>
+                          </div>
+                        )}
+                        <img
+                          src={logoSrc}
+                          alt="Lomi Logo"
+                          width={logoWidth}
+                          height={logoHeight}
+                          loading="eager"
+                          decoding="async"
+                          className={`h-16 sm:h-24 w-auto transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                          onLoad={() => setImageLoaded(true)}
+                        />
+                      </>
                     )}
                   </ClientOnly>
                 </div>
