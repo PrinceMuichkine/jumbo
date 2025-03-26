@@ -41,18 +41,13 @@ body {
 body.modal-open {
   overflow: hidden;
 
-  // Style for footer when modal is open
-  nav.footer, nav[class*="footer"], footer, .footer {
+  // Style for elements when modal is open, excluding footer
+  nav:not(.footer), nav:not([class*="footer"]) {
     opacity: 0.3 !important;
     filter: blur(1px);
     pointer-events: none;
     transition: opacity 0.3s ease, filter 0.3s ease;
     z-index: 10 !important; // Lower z-index when modal is open
-
-    // Ensure footer maintains its dark background in dark mode
-    &.bg-jumbo-elements-background-depth-1 {
-      background-color: var(--jumbo-elements-background-depth-1) !important;
-    }
   }
 }
 

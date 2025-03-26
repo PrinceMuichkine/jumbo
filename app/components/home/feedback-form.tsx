@@ -73,7 +73,7 @@ export default function FeedbackForm() {
     <div className="relative" ref={formRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="text-jumbo-elements-textSecondary hover:text-jumbo-elements-textPrimary transition-colors text-xs font-medium bg-transparent"
+        className="text-jumbo-elements-textSecondary hover:text-jumbo-elements-textPrimary transition-colors text-xs bg-transparent"
       >
         {t(currentLanguage, 'feedback_form.button')}
       </button>

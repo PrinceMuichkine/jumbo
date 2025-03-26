@@ -8,13 +8,6 @@ body.modal-open {
   overflow: hidden;
 }
 
-body.modal-open nav {
-  opacity: 0.3 !important;
-  filter: blur(1px);
-  pointer-events: none;
-  transition: opacity 0.3s ease, filter 0.3s ease;
-}
-
 .BaseChat {
   &[data-chat-visible='false'] {
     --workbench-inner-width: 100%;

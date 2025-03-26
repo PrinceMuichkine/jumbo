@@ -63,7 +63,7 @@ export function Footer({ className }: { className?: string }) {
               to="https://lomi.africa/blog"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-jumbo-elements-textSecondary hover:text-jumbo-elements-textPrimary transition-colors text-xs font-medium"
+              className="text-jumbo-elements-textSecondary hover:text-jumbo-elements-textPrimary transition-colors text-xs"
             >
               {t(currentLanguage, 'footer.blog')}
             </Link>
@@ -127,7 +127,7 @@ export function Footer({ className }: { className?: string }) {
                 to="https://lomi.africa/faq"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-jumbo-elements-textSecondary hover:text-jumbo-elements-textPrimary transition-colors text-xs font-medium px-1.5"
+                className="text-jumbo-elements-textSecondary hover:text-jumbo-elements-textPrimary transition-colors text-xs px-1.5"
               >
                 {isMobile ? "FAQ" : t(currentLanguage, 'footer.faq')}
               </Link>
@@ -136,7 +136,7 @@ export function Footer({ className }: { className?: string }) {
                 to="https://lomi.africa/privacy"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-jumbo-elements-textSecondary hover:text-jumbo-elements-textPrimary transition-colors text-xs font-medium px-1.5"
+                className="text-jumbo-elements-textSecondary hover:text-jumbo-elements-textPrimary transition-colors text-xs px-1.5"
               >
                 {isMobile ? "Privacy" : t(currentLanguage, 'footer.privacy')}
               </Link>
@@ -146,7 +146,7 @@ export function Footer({ className }: { className?: string }) {
                   to="https://lomi.africa/terms"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-jumbo-elements-textSecondary hover:text-jumbo-elements-textPrimary transition-colors text-xs font-medium px-1.5"
+                  className="text-jumbo-elements-textSecondary hover:text-jumbo-elements-textPrimary transition-colors text-xs px-1.5"
                 >
                   {t(currentLanguage, 'footer.terms')}
                 </Link>
