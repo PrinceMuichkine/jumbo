@@ -5,13 +5,14 @@ import { useAnimate } from 'framer-motion';
 import { memo, useEffect, useRef, useState } from 'react';
 import { cssTransition, toast, ToastContainer } from 'react-toastify';
 import { useMessageParser, usePromptEnhancer, useShortcuts, useSnapScroll } from '@/lib/hooks';
-import { useChatHistory } from '@/lib/persistence';
+import { useChatHistory, type ChatMessage } from '@/lib/persistence';
 import { chatStore } from '@/lib/stores/chat';
 import { workbenchStore } from '@/lib/stores/workbench';
 import { fileModificationsToHTML } from '@/utils/diff';
 import { cubicEasingFn } from '@/utils/easings';
 import { createScopedLogger, renderLogger } from '@/utils/logger';
 import { BaseChat } from './BaseChat';
+import { IterationNavigation } from './IterationNavigation.client';
 
 const toastAnimation = cssTransition({
   enter: 'animated fadeInRight',
@@ -23,11 +24,16 @@ const logger = createScopedLogger('Chat');
 export function Chat() {
   renderLogger.trace('Chat');
 
-  const { ready, initialMessages, storeMessageHistory } = useChatHistory();
+  const { ready, initialMessages, storeMessageHistory, navigateToIteration, startNewIteration } = useChatHistory();
 
   return (
     <>
-      {ready && <ChatImpl initialMessages={initialMessages} storeMessageHistory={storeMessageHistory} />}
+      {ready && <ChatImpl
+        initialMessages={initialMessages}
+        storeMessageHistory={storeMessageHistory}
+        navigateToIteration={navigateToIteration}
+        startNewIteration={startNewIteration}
+      />}
       <ToastContainer
         closeButton={({ closeToast }) => {
           return (
@@ -60,14 +66,17 @@ export function Chat() {
 }
 
 interface ChatProps {
-  initialMessages: Message[];
-  storeMessageHistory: (messages: Message[]) => Promise<void>;
+  initialMessages: ChatMessage[];
+  storeMessageHistory: (messages: ChatMessage[]) => Promise<void>;
+  navigateToIteration: (iteration: number) => ChatMessage[];
+  startNewIteration: () => number;
 }
 
-export const ChatImpl = memo(({ initialMessages, storeMessageHistory }: ChatProps) => {
+export const ChatImpl = memo(({ initialMessages, storeMessageHistory, navigateToIteration, startNewIteration }: ChatProps) => {
   useShortcuts();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [filteredMessages, setFilteredMessages] = useState<ChatMessage[]>(initialMessages);
 
   const [chatStarted, setChatStarted] = useState(initialMessages.length > 0);
 
@@ -75,7 +84,7 @@ export const ChatImpl = memo(({ initialMessages, storeMessageHistory }: ChatProp
 
   const [animationScope, animate] = useAnimate();
 
-  const { messages, isLoading, input, handleInputChange, setInput, stop, append } = useChat({
+  const { messages, isLoading, input, handleInputChange, setInput, stop, append, setMessages } = useChat({
     api: '/api/chat',
     onError: (error) => {
       logger.error('Request failed\n\n', error);
@@ -100,7 +109,7 @@ export const ChatImpl = memo(({ initialMessages, storeMessageHistory }: ChatProp
     parseMessages(messages, isLoading);
 
     if (messages.length > initialMessages.length) {
-      storeMessageHistory(messages).catch((error) => toast.error(error.message));
+      storeMessageHistory(messages as ChatMessage[]).catch((error) => toast.error(error.message));
     }
   }, [messages, isLoading, parseMessages]);
 
@@ -196,39 +205,94 @@ export const ChatImpl = memo(({ initialMessages, storeMessageHistory }: ChatProp
     textareaRef.current?.blur();
   };
 
+  const handleIterationChange = (iteration: number) => {
+    const filteredMsgs = navigateToIteration(iteration);
+    setFilteredMessages(filteredMsgs);
+    setMessages(filteredMsgs);
+  };
+
+  const handleStartNewIteration = () => {
+    const newIteration = startNewIteration();
+
+    // Take a snapshot of the current workbench state before starting new iteration
+    // This ensures we save the complete state at this point in time
+    const lastMessage = messages[messages.length - 1] as ChatMessage;
+    if (lastMessage && lastMessage.role === 'assistant') {
+      const currentState = workbenchStore.files.get();
+      const workbenchState = {
+        files: Object.entries(currentState).reduce((acc, [path, dirent]) => {
+          if (dirent?.type === 'file') {
+            acc[path] = {
+              content: dirent.content,
+              type: 'file' as const,
+              isBinary: dirent.isBinary
+            };
+          }
+          return acc;
+        }, {} as Record<string, any>),
+        selectedFile: workbenchStore.selectedFile.get(),
+        previews: workbenchStore.previews.get(),
+      };
+
+      // Create a copy of the last message with updated workbench state
+      const updatedMessage = {
+        ...lastMessage,
+        workbenchState
+      };
+
+      // Update the message in the list
+      const updatedMessages = [...messages.slice(0, -1), updatedMessage] as ChatMessage[];
+      setMessages(updatedMessages);
+
+      // Store the updated message history
+      storeMessageHistory(updatedMessages).catch(error =>
+        toast.error(`Failed to save iteration state: ${error.message}`)
+      );
+    }
+
+    toast.success(`Starting iteration ${newIteration}`);
+  };
+
   const [messageRef, scrollRef] = useSnapScroll();
 
   return (
-    <BaseChat
-      ref={animationScope}
-      textareaRef={textareaRef}
-      input={input}
-      showChat={showChat}
-      chatStarted={chatStarted}
-      isStreaming={isLoading}
-      enhancingPrompt={enhancingPrompt}
-      promptEnhanced={promptEnhanced}
-      sendMessage={sendMessage}
-      messageRef={messageRef}
-      scrollRef={scrollRef}
-      handleInputChange={handleInputChange}
-      handleStop={abort}
-      messages={messages.map((message, i) => {
-        if (message.role === 'user') {
-          return message;
-        }
+    <div className="flex flex-col h-full">
+      <IterationNavigation
+        messages={messages as ChatMessage[]}
+        onIterationChange={handleIterationChange}
+        onStartNewIteration={handleStartNewIteration}
+      />
+      <BaseChat
+        ref={animationScope}
+        textareaRef={textareaRef}
+        input={input}
+        showChat={showChat}
+        chatStarted={chatStarted}
+        isStreaming={isLoading}
+        enhancingPrompt={enhancingPrompt}
+        promptEnhanced={promptEnhanced}
+        sendMessage={sendMessage}
+        messageRef={messageRef}
+        scrollRef={scrollRef}
+        handleInputChange={handleInputChange}
+        handleStop={abort}
+        messages={messages.map((message, i) => {
+          if (message.role === 'user') {
+            return message;
+          }
 
-        return {
-          ...message,
-          content: parsedMessages[i] || '',
-        };
-      })}
-      enhancePrompt={() => {
-        enhancePrompt(input, (input) => {
-          setInput(input);
-          scrollTextArea();
-        });
-      }}
-    />
+          return {
+            ...message,
+            content: parsedMessages[i] || '',
+          };
+        })}
+        enhancePrompt={() => {
+          enhancePrompt(input, (input) => {
+            setInput(input);
+            scrollTextArea();
+          });
+        }}
+      />
+    </div>
   );
 });

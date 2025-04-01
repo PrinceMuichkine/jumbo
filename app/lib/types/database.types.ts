@@ -9,13 +9,95 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      chat_history: {
+        Row: {
+          id: string
+          user_id: string
+          url_id: string | null
+          description: string | null
+          messages: Json
+          current_iteration: number | null
+          created_at: string | null
+          updated_at: string | null
+          deleted_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          url_id?: string | null
+          description?: string | null
+          messages?: Json
+          current_iteration?: number | null
+          created_at?: string | null
+          updated_at?: string | null
+          deleted_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          url_id?: string | null
+          description?: string | null
+          messages?: Json
+          current_iteration?: number | null
+          created_at?: string | null
+          updated_at?: string | null
+          deleted_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_history_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_all_chats: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          url_id: string | null
+          description: string | null
+          messages: Json
+          current_iteration: number | null
+          updated_at: string
+        }[]
+      }
+      get_chat: {
+        Args: {
+          p_id: string
+        }
+        Returns: {
+          id: string
+          url_id: string | null
+          description: string | null
+          messages: Json
+          current_iteration: number | null
+          updated_at: string
+        }[]
+      }
+      soft_delete_chat: {
+        Args: {
+          p_id: string
+        }
+        Returns: boolean
+      }
+      store_chat: {
+        Args: {
+          p_id: string
+          p_url_id?: string | null
+          p_description?: string | null
+          p_messages: Json
+          p_current_iteration?: number | null
+        }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

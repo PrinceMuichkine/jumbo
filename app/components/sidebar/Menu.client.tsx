@@ -3,7 +3,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Dialog, DialogButton, DialogDescription, DialogRoot, DialogTitle } from '@/components/ui/Dialog';
 import { ThemeSwitch } from '@/components/ui/ThemeSwitch';
-import { db, deleteById, getAll, chatId, type ChatHistoryItem } from '@/lib/persistence';
+import { chatId, type ChatHistoryItem } from '@/lib/persistence';
+import { supabase } from '@/lib/supabase/client';
 import { cubicEasingFn } from '@/utils/easings';
 import { logger } from '@/utils/logger';
 import { HistoryItem } from './HistoryItem';
@@ -37,6 +38,59 @@ const menuVariants = {
 } satisfies Variants;
 
 type DialogContent = { type: 'delete'; item: ChatHistoryItem } | null;
+
+// Helper function to get all chats
+async function getAllChats(): Promise<ChatHistoryItem[]> {
+  try {
+    const { data: user } = await supabase.auth.getUser();
+
+    if (!user?.user) {
+      return [];
+    }
+
+    // Use RPC function to get all chats
+    const { data, error } = await supabase.rpc('get_all_chats');
+
+    if (error) {
+      logger.error('Error fetching chats:', error);
+      throw error;
+    }
+
+    // Convert from Supabase format to app format
+    return (data || []).map((item: any) => ({
+      id: item.id,
+      urlId: item.url_id,
+      description: item.description,
+      messages: item.messages,
+      timestamp: item.updated_at,
+    }));
+  } catch (error: any) {
+    logger.error('Failed to get chats:', error);
+    throw error;
+  }
+}
+
+// Helper function to delete a chat
+async function deleteChat(id: string): Promise<void> {
+  try {
+    const { data: user } = await supabase.auth.getUser();
+
+    if (!user?.user) {
+      throw new Error('User not authenticated');
+    }
+
+    // Use RPC function to soft delete chat
+    const { error } = await supabase.rpc('soft_delete_chat', { p_id: id });
+
+    if (error) {
+      logger.error('Error deleting chat:', error);
+      throw error;
+    }
+  } catch (error: any) {
+    logger.error('Failed to delete chat:', error);
+    throw error;
+  }
+}
 
 export function Menu() {
   const menuRef = useRef<HTMLDivElement>(null);
@@ -85,32 +139,28 @@ export function Menu() {
   }, []);
 
   const loadEntries = useCallback(() => {
-    if (db) {
-      getAll(db)
-        .then((list) => list.filter((item) => item.urlId && item.description))
-        .then(setList)
-        .catch((error) => toast.error(error.message));
-    }
+    getAllChats()
+      .then((list: ChatHistoryItem[]) => list.filter((item) => item.urlId && item.description))
+      .then(setList)
+      .catch((error: Error) => toast.error(error.message));
   }, []);
 
   const deleteItem = useCallback((event: React.UIEvent, item: ChatHistoryItem) => {
     event.preventDefault();
 
-    if (db) {
-      deleteById(db, item.id)
-        .then(() => {
-          loadEntries();
+    deleteChat(item.id)
+      .then(() => {
+        loadEntries();
 
-          if (chatId.get() === item.id) {
-            // hard page navigation to clear the stores
-            window.location.pathname = '/';
-          }
-        })
-        .catch((error) => {
-          toast.error('Failed to delete conversation');
-          logger.error(error);
-        });
-    }
+        if (chatId.get() === item.id) {
+          // hard page navigation to clear the stores
+          window.location.pathname = '/';
+        }
+      })
+      .catch((error: Error) => {
+        toast.error('Failed to delete conversation');
+        logger.error(error);
+      });
   }, []);
 
   const closeDialog = () => {
@@ -168,7 +218,7 @@ export function Menu() {
   };
 
   const openHelpCenter = () => {
-    window.open('https://help.jumbo.lomi.africa', '_blank');
+    window.open('https://developers.lomi.africa/docs/support/contact', '_blank');
   };
 
   // Check if we're on the home page
