@@ -2,7 +2,7 @@ import { useStore } from '@nanostores/react';
 import type { Message } from 'ai';
 import { useChat } from 'ai/react';
 import { useAnimate } from 'framer-motion';
-import { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { cssTransition, toast, ToastContainer } from 'react-toastify';
 import { useMessageParser, usePromptEnhancer, useShortcuts, useSnapScroll } from '@/lib/hooks';
 import { useChatHistory, type ChatMessage } from '@/lib/persistence';
@@ -12,7 +12,6 @@ import { fileModificationsToHTML } from '@/utils/diff';
 import { cubicEasingFn } from '@/utils/easings';
 import { createScopedLogger, renderLogger } from '@/utils/logger';
 import { BaseChat } from './BaseChat';
-import { IterationNavigation } from './IterationNavigation.client';
 
 const toastAnimation = cssTransition({
   enter: 'animated fadeInRight',
@@ -24,15 +23,15 @@ const logger = createScopedLogger('Chat');
 export function Chat() {
   renderLogger.trace('Chat');
 
-  const { ready, initialMessages, storeMessageHistory, navigateToIteration, startNewIteration } = useChatHistory();
+  const { ready, initialMessages, storeMessageHistory, availableSnapshots, restoreSnapshot } = useChatHistory();
 
   return (
     <>
       {ready && <ChatImpl
         initialMessages={initialMessages}
         storeMessageHistory={storeMessageHistory}
-        navigateToIteration={navigateToIteration}
-        startNewIteration={startNewIteration}
+        availableSnapshots={availableSnapshots}
+        restoreSnapshot={restoreSnapshot}
       />}
       <ToastContainer
         closeButton={({ closeToast }) => {
@@ -68,16 +67,14 @@ export function Chat() {
 interface ChatProps {
   initialMessages: ChatMessage[];
   storeMessageHistory: (messages: ChatMessage[]) => Promise<void>;
-  navigateToIteration: (iteration: number) => ChatMessage[];
-  startNewIteration: () => number;
+  availableSnapshots: Array<{ message_id: string; created_at: string }>;
+  restoreSnapshot: (messageId: string) => Promise<ChatMessage[] | null>;
 }
 
-export const ChatImpl = memo(({ initialMessages, storeMessageHistory, navigateToIteration, startNewIteration }: ChatProps) => {
+export const ChatImpl = memo(({ initialMessages, storeMessageHistory, availableSnapshots, restoreSnapshot }: ChatProps) => {
   useShortcuts();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [filteredMessages, setFilteredMessages] = useState<ChatMessage[]>(initialMessages);
-
   const [chatStarted, setChatStarted] = useState(initialMessages.length > 0);
 
   const { showChat } = useStore(chatStore);
@@ -111,7 +108,7 @@ export const ChatImpl = memo(({ initialMessages, storeMessageHistory, navigateTo
     if (messages.length > initialMessages.length) {
       storeMessageHistory(messages as ChatMessage[]).catch((error) => toast.error(error.message));
     }
-  }, [messages, isLoading, parseMessages]);
+  }, [messages, isLoading, parseMessages, storeMessageHistory]);
 
   const scrollTextArea = () => {
     const textarea = textareaRef.current;
@@ -205,63 +202,22 @@ export const ChatImpl = memo(({ initialMessages, storeMessageHistory, navigateTo
     textareaRef.current?.blur();
   };
 
-  const handleIterationChange = (iteration: number) => {
-    const filteredMsgs = navigateToIteration(iteration);
-    setFilteredMessages(filteredMsgs);
-    setMessages(filteredMsgs);
-  };
-
-  const handleStartNewIteration = () => {
-    const newIteration = startNewIteration();
-
-    // Take a snapshot of the current workbench state before starting new iteration
-    // This ensures we save the complete state at this point in time
-    const lastMessage = messages[messages.length - 1] as ChatMessage;
-    if (lastMessage && lastMessage.role === 'assistant') {
-      const currentState = workbenchStore.files.get();
-      const workbenchState = {
-        files: Object.entries(currentState).reduce((acc, [path, dirent]) => {
-          if (dirent?.type === 'file') {
-            acc[path] = {
-              content: dirent.content,
-              type: 'file' as const,
-              isBinary: dirent.isBinary
-            };
-          }
-          return acc;
-        }, {} as Record<string, any>),
-        selectedFile: workbenchStore.selectedFile.get(),
-        previews: workbenchStore.previews.get(),
-      };
-
-      // Create a copy of the last message with updated workbench state
-      const updatedMessage = {
-        ...lastMessage,
-        workbenchState
-      };
-
-      // Update the message in the list
-      const updatedMessages = [...messages.slice(0, -1), updatedMessage] as ChatMessage[];
-      setMessages(updatedMessages);
-
-      // Store the updated message history
-      storeMessageHistory(updatedMessages).catch(error =>
-        toast.error(`Failed to save iteration state: ${error.message}`)
-      );
+  const handleRestoreSnapshot = async (messageId: string) => {
+    logger.debug(`Attempting to restore snapshot for message: ${messageId}`);
+    const restoredMessages = await restoreSnapshot(messageId);
+    if (restoredMessages) {
+      logger.info(`Snapshot restored. Updating messages view.`);
+      setMessages(restoredMessages);
+      toast.success('Snapshot restored successfully!');
+    } else {
+      logger.warn(`Snapshot restore failed or returned no messages for ${messageId}`);
     }
-
-    toast.success(`Starting iteration ${newIteration}`);
   };
 
   const [messageRef, scrollRef] = useSnapScroll();
 
   return (
     <div className="flex flex-col h-full">
-      <IterationNavigation
-        messages={messages as ChatMessage[]}
-        onIterationChange={handleIterationChange}
-        onStartNewIteration={handleStartNewIteration}
-      />
       <BaseChat
         ref={animationScope}
         textareaRef={textareaRef}
@@ -283,7 +239,7 @@ export const ChatImpl = memo(({ initialMessages, storeMessageHistory, navigateTo
 
           return {
             ...message,
-            content: parsedMessages[i] || '',
+            content: parsedMessages[i] || ''
           };
         })}
         enhancePrompt={() => {

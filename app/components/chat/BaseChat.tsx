@@ -11,6 +11,9 @@ import { useTranslation } from '@/lib/contexts/TranslationContext';
 import { t } from '@/lib/i18n/translations';
 import { useStore } from '@nanostores/react';
 import { themeStore } from '@/lib/stores/theme';
+import { useUser } from '@/lib/contexts/UserContext';
+import { AuthModal } from '@/components/auth/AuthModal';
+import type { ChatMessage } from '@/lib/persistence';
 
 // Import module CSS
 import styles from './BaseChat.module.scss';
@@ -22,7 +25,7 @@ interface BaseChatProps {
   showChat?: boolean;
   chatStarted?: boolean;
   isStreaming?: boolean;
-  messages?: Message[];
+  messages?: ChatMessage[];
   enhancingPrompt?: boolean;
   promptEnhanced?: boolean;
   input?: string;
@@ -30,6 +33,8 @@ interface BaseChatProps {
   sendMessage?: (event: React.UIEvent, messageInput?: string) => void;
   handleInputChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   enhancePrompt?: () => void;
+  availableSnapshots?: Array<{ message_id: string; created_at: string }>;
+  handleRestoreSnapshot?: (messageId: string) => Promise<void>;
 }
 
 // Disclaimer Modal component
@@ -115,11 +120,15 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
       handleInputChange,
       enhancePrompt,
       handleStop,
+      availableSnapshots,
+      handleRestoreSnapshot,
     },
     ref,
   ) => {
     const TEXTAREA_MAX_HEIGHT = chatStarted ? 400 : 200;
     const [disclaimerOpen, setDisclaimerOpen] = useState(false);
+    const [showAuthModal, setShowAuthModal] = useState(false);
+    const { user } = useUser();
     const [isDarkMode, setIsDarkMode] = useState(false);
     const { currentLanguage } = useTranslation();
     const [isMobile, setIsMobile] = useState(false);
@@ -173,8 +182,16 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
     const examplePrompts = getExamplePrompts(currentLanguage);
 
     const handleSendMessage = (event: React.UIEvent, messageInput?: string) => {
-      // Show disclaimer instead of sending message
-      setDisclaimerOpen(true);
+      // Check if user is logged in
+      if (!user) {
+        setShowAuthModal(true);
+        return;
+      }
+
+      // Original logic - If user is logged in, proceed with sending
+      if (sendMessage) {
+        sendMessage(event, messageInput);
+      }
     };
 
     // Get only 3 example prompts for mobile
@@ -246,6 +263,8 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                       className="flex flex-col w-full flex-1 max-w-chat px-2 sm:px-4 pb-4 sm:pb-6 mx-auto z-1"
                       messages={messages}
                       isStreaming={isStreaming}
+                      availableSnapshots={availableSnapshots}
+                      handleRestoreSnapshot={handleRestoreSnapshot}
                     />
                   ) : null;
                 }}
@@ -312,7 +331,16 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                             promptEnhanced,
                         })}
                         onClick={() => {
-                          setDisclaimerOpen(true);
+                          // Check if user is logged in
+                          if (!user) {
+                            setShowAuthModal(true);
+                            return;
+                          }
+
+                          // Original logic - If user is logged in, proceed with enhancing
+                          if (enhancePrompt) {
+                            enhancePrompt();
+                          }
                         }}
                       >
                         {enhancingPrompt ? (
@@ -362,6 +390,11 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
           </div>
           <ClientOnly>{() => <Workbench chatStarted={chatStarted} isStreaming={isStreaming} />}</ClientOnly>
         </div>
+        <AuthModal
+          open={showAuthModal}
+          onOpenChange={setShowAuthModal}
+          defaultTab="signin"
+        />
       </div>
     );
   },

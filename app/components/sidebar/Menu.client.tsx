@@ -15,6 +15,7 @@ import { SubscriptionModal } from '@/components/settings/SubscriptionModal';
 import { useUser } from '@/lib/contexts/UserContext';
 import { SIGNOUT_EVENT, SIGNIN_EVENT } from '@/lib/contexts/UserEvents';
 import type { User } from '@supabase/supabase-js';
+import { useNavigate } from '@remix-run/react';
 
 const menuVariants = {
   closed: {
@@ -104,6 +105,7 @@ export function Menu() {
   const [showReferralModal, setShowReferralModal] = useState(false);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const navigate = useNavigate();
 
   // Sync with context
   useEffect(() => {
@@ -140,7 +142,7 @@ export function Menu() {
 
   const loadEntries = useCallback(() => {
     getAllChats()
-      .then((list: ChatHistoryItem[]) => list.filter((item) => item.urlId && item.description))
+      .then((list: ChatHistoryItem[]) => list.filter((item) => item.description))
       .then(setList)
       .catch((error: Error) => toast.error(error.message));
   }, []);
@@ -224,6 +226,13 @@ export function Menu() {
   // Check if we're on the home page
   const isHomePage = window.location.pathname === '/';
 
+  const handleStartNewChat = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    logger.debug('[Menu] Starting new chat, resetting chatId.');
+    chatId.set(undefined);
+    navigate('/');
+  };
+
   return (
     <>
       <motion.div
@@ -238,13 +247,14 @@ export function Menu() {
           <div className="p-4">
             <a
               href="/"
+              onClick={handleStartNewChat}
               className="flex gap-2 items-center bg-jumbo-elements-sidebar-buttonBackgroundDefault text-jumbo-elements-sidebar-buttonText hover:bg-jumbo-elements-sidebar-buttonBackgroundHover rounded-md p-2 transition-theme"
             >
               <span className="inline-block i-jumbo:chat scale-110" />
               Start new chat
             </a>
           </div>
-          <div className="text-jumbo-elements-textPrimary font-medium pl-6 pr-5 my-2">Your Chats</div>
+          <div className="text-jumbo-elements-textPrimary font-medium pl-6 pr-5 my-2">Chats</div>
           <div className="flex-1 overflow-scroll pl-4 pr-5 pb-5">
             {list.length === 0 && <div className="pl-2 text-jumbo-elements-textTertiary">No previous conversations</div>}
             <DialogRoot open={dialogContent !== null}>

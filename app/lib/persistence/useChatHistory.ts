@@ -10,11 +10,12 @@ import type { FileMap } from '@/lib/stores/files';
 
 const logger = createScopedLogger('ChatHistory');
 
-// Extend Message type with iteration metadata
+// Extend Message type with iteration metadata -> remove iteration if not needed?
+// Keep timestamp and workbenchState as they relate to the message itself
 export interface ChatMessage extends Message {
-  iteration?: number;
+  // iteration?: number; // Removed as versioning is snapshot based
   timestamp?: string;
-  workbenchState?: {
+  workbenchState?: { // We might still store this temporarily on the message before snapshotting
     files?: Record<string, { content: string; type: 'file'; isBinary: boolean }>;
     selectedFile?: string;
     previews?: Array<{ port: number; baseUrl: string; title?: string; }>;
@@ -26,158 +27,18 @@ export interface ChatHistoryItem {
   urlId?: string;
   description?: string;
   messages: ChatMessage[];
-  currentIteration?: number;
-  timestamp: string;
+  // currentIteration?: number; // Removed
+  timestamp: string; // Represents last updated time of the chat history row
 }
 
 export const chatId = atom<string | undefined>(undefined);
 export const description = atom<string | undefined>(undefined);
-export const currentIteration = atom<number>(1);
+// export const currentIteration = atom<number>(1); // Removed
 
-export function useChatHistory() {
-  const navigate = useNavigate();
-  const { id: mixedId } = useLoaderData<{ id?: string }>();
-
-  const [initialMessages, setInitialMessages] = useState<ChatMessage[]>([]);
-  const [ready, setReady] = useState<boolean>(false);
-  const [urlId, setUrlId] = useState<string | undefined>();
-
-  useEffect(() => {
-    if (mixedId) {
-      getChat(mixedId)
-        .then((storedChat) => {
-          if (storedChat && storedChat.messages.length > 0) {
-            setInitialMessages(storedChat.messages);
-            setUrlId(storedChat.urlId);
-            description.set(storedChat.description);
-            chatId.set(storedChat.id);
-
-            // Set the current iteration from stored chat
-            if (storedChat.currentIteration) {
-              currentIteration.set(storedChat.currentIteration);
-            }
-          } else {
-            navigate(`/`, { replace: true });
-          }
-
-          setReady(true);
-        })
-        .catch((error) => {
-          toast.error(error.message);
-          setReady(true);
-        });
-    } else {
-      setReady(true);
-    }
-  }, [mixedId, navigate]);
-
-  return {
-    ready: !mixedId || ready,
-    initialMessages,
-    storeMessageHistory: async (messages: ChatMessage[]) => {
-      if (messages.length === 0) {
-        return;
-      }
-
-      const { firstArtifact } = workbenchStore;
-
-      if (!urlId && firstArtifact?.id) {
-        try {
-          const generatedUrlId = await generateUrlId(firstArtifact.id);
-          navigateChat(generatedUrlId);
-          setUrlId(generatedUrlId);
-        } catch (error) {
-          toast.error('Failed to generate URL ID');
-          logger.error(error);
-          return;
-        }
-      }
-
-      if (!description.get() && firstArtifact?.title) {
-        description.set(firstArtifact?.title);
-      }
-
-      if (initialMessages.length === 0 && !chatId.get()) {
-        try {
-          const newId = await generateId();
-          chatId.set(newId);
-
-          if (!urlId) {
-            navigateChat(newId);
-          }
-        } catch (error) {
-          toast.error('Failed to generate chat ID');
-          logger.error(error);
-          return;
-        }
-      }
-
-      // Tag new messages with iteration information and capture workbench state
-      const iterationNumber = currentIteration.get();
-      const messagesWithIteration = messages.map(msg => {
-        if (!msg.iteration) {
-          // Capture workbench state for assistant messages
-          const workbenchState = msg.role === 'assistant' ? {
-            files: captureWorkbenchFiles(),
-            selectedFile: workbenchStore.selectedFile.get(),
-            previews: workbenchStore.previews.get(),
-          } : undefined;
-
-          return {
-            ...msg,
-            iteration: iterationNumber,
-            timestamp: msg.timestamp || new Date().toISOString(),
-            workbenchState
-          };
-        }
-        return msg;
-      });
-
-      try {
-        await storeMessages(
-          chatId.get() as string,
-          messagesWithIteration,
-          urlId,
-          description.get(),
-          iterationNumber
-        );
-      } catch (error) {
-        toast.error('Failed to save chat');
-        logger.error(error);
-      }
-    },
-
-    // Add function to navigate to a specific iteration
-    navigateToIteration: (iteration: number) => {
-      currentIteration.set(iteration);
-      const filteredMessages = initialMessages.filter(msg => !msg.iteration || msg.iteration <= iteration);
-
-      // Restore workbench state from the last assistant message in this iteration
-      const lastAssistantMessage = [...filteredMessages]
-        .reverse()
-        .find(msg => msg.role === 'assistant' && msg.workbenchState);
-
-      if (lastAssistantMessage?.workbenchState) {
-        restoreWorkbenchState(lastAssistantMessage.workbenchState);
-      }
-
-      return filteredMessages;
-    },
-
-    // Start a new iteration from a previous one
-    startNewIteration: () => {
-      const nextIteration = currentIteration.get() + 1;
-      currentIteration.set(nextIteration);
-      return nextIteration;
-    }
-  };
-}
-
-// Helper function to capture current workbench files
-function captureWorkbenchFiles() {
+// --- Helper function to capture current workbench files ---
+function captureWorkbenchFiles(): Record<string, { content: string; type: 'file'; isBinary: boolean }> {
   const files = workbenchStore.files.get();
   const result: Record<string, { content: string; type: 'file'; isBinary: boolean }> = {};
-
   Object.entries(files).forEach(([path, dirent]) => {
     if (dirent?.type === 'file') {
       result[path] = {
@@ -187,105 +48,357 @@ function captureWorkbenchFiles() {
       };
     }
   });
-
   return result;
 }
 
-// Helper function to restore workbench state
-function restoreWorkbenchState(state: ChatMessage['workbenchState']) {
-  if (!state) return;
+// --- Helper function to restore workbench state from snapshot data ---
+// TODO: Adapt this to work with our workbenchStore and WebContainer if needed
+function restoreWorkbenchStateFromSnapshot(snapshotFiles: Record<string, { content: string; type: 'file'; isBinary: boolean }>) {
+  if (!snapshotFiles) return;
+
+  // Clear existing files? Or merge? Decide on strategy.
+  // For now, let's assume we replace the current state.
+  workbenchStore.setDocuments({});
 
   // Set view to code if we're restoring files
-  if (state.files && Object.keys(state.files).length > 0) {
+  if (Object.keys(snapshotFiles).length > 0) {
     workbenchStore.currentView.set('code');
     workbenchStore.setShowWorkbench(true);
 
-    // Create file map in the format expected by setDocuments
     const fileMap: FileMap = {};
-
-    // Add files from the saved state
-    Object.entries(state.files).forEach(([path, file]) => {
+    Object.entries(snapshotFiles).forEach(([path, file]) => {
+      // Assuming snapshotFiles directly contains the needed structure
       fileMap[path] = file;
     });
 
     // Set documents (which will load them into the editor)
     workbenchStore.setDocuments(fileMap);
 
-    // Set selected file
-    if (state.selectedFile) {
-      workbenchStore.setSelectedFile(state.selectedFile);
-    }
-
-    // Restore previews if available
-    if (state.previews && state.previews.length > 0) {
-      // Switch to preview view if there are previews
-      workbenchStore.currentView.set('preview');
+    // Maybe set selected file to the first one? Or leave it null?
+    const firstFilePath = Object.keys(fileMap)[0];
+    if (firstFilePath) {
+      workbenchStore.setSelectedFile(firstFilePath);
     }
   }
+  // TODO: Handle preview restoration if needed and possible from snapshot data
 }
 
-// Get chat by ID or URL ID
+export function useChatHistory() {
+  const navigate = useNavigate();
+  const { id: mixedId } = useLoaderData<{ id?: string }>();
+
+  const [initialMessages, setInitialMessages] = useState<ChatMessage[]>([]);
+  const [ready, setReady] = useState<boolean>(false);
+  const [urlId, setUrlId] = useState<string | undefined>();
+  // Add state to hold available snapshots for the current chat
+  const [availableSnapshots, setAvailableSnapshots] = useState<Array<{ message_id: string; created_at: string }>>([]);
+
+  // Fetch chat data and snapshots on load
+  useEffect(() => {
+    if (mixedId) {
+      Promise.all([
+        getChat(mixedId),
+        getSnapshotsForChat(mixedId) // Fetch snapshots for this chat
+      ]).then(([storedChat, snapshots]) => {
+          // Add logging here
+          logger.debug('[useChatHistory] Raw snapshots received:', snapshots);
+
+          if (storedChat && storedChat.messages.length > 0) {
+            setInitialMessages(storedChat.messages);
+            setUrlId(storedChat.urlId);
+            description.set(storedChat.description);
+            chatId.set(storedChat.id);
+            // Store snapshot info (message_id, created_at) for UI display
+            const snapshotInfo = snapshots.map(s => ({ message_id: s.message_id, created_at: s.created_at }));
+            logger.debug('[useChatHistory] Setting availableSnapshots:', snapshotInfo);
+            setAvailableSnapshots(snapshotInfo);
+          } else {
+            // If chat not found, clear snapshots and navigate
+            logger.debug('[useChatHistory] Chat not found or empty, clearing snapshots.');
+            setAvailableSnapshots([]);
+            navigate(`/`, { replace: true });
+          }
+          setReady(true);
+        })
+        .catch((error) => {
+          toast.error(`Failed to load chat or snapshots: ${error.message}`);
+          logger.error('[useChatHistory] Error loading chat/snapshots:', error);
+          setAvailableSnapshots([]);
+          setReady(true);
+        });
+    } else {
+      logger.debug('[useChatHistory] No chat ID (mixedId) provided.');
+      setReady(true);
+      setAvailableSnapshots([]); // Clear snapshots if no chat ID
+    }
+  }, [mixedId, navigate]);
+
+  // Function to save a snapshot
+  const saveSnapshot = async (chatHistoryId: string, messageId: string) => {
+    if (!chatHistoryId || !messageId) {
+      logger.warn('Cannot save snapshot without chat ID or message ID');
+      return;
+    }
+
+    const filesToSave = captureWorkbenchFiles();
+    if (Object.keys(filesToSave).length === 0) {
+      logger.debug('No files in workbench, skipping snapshot.');
+      return; // Don't save empty snapshots
+    }
+
+    try {
+      logger.debug(`Creating snapshot for message ${messageId} in chat ${chatHistoryId}`);
+      const { data, error } = await supabase.rpc('create_snapshot', {
+        p_chat_history_id: chatHistoryId,
+        p_message_id: messageId,
+        p_workbench_files: filesToSave
+      });
+
+      if (error) throw error;
+      logger.info(`Snapshot created successfully with ID: ${data}`);
+      // Optionally update availableSnapshots state here immediately
+      // Or rely on the initial load/refresh to pick it up
+    } catch (error) {
+      toast.error('Failed to save snapshot');
+      logger.error('Failed to save snapshot:', error);
+    }
+  };
+
+  // Function to restore from a snapshot
+  const restoreSnapshot = async (messageIdToRestore: string) => {
+    try {
+      logger.debug(`Restoring snapshot for message ${messageIdToRestore}`);
+      const { data: snapshotData, error } = await supabase.rpc('get_snapshot_by_message_id', {
+        p_message_id: messageIdToRestore
+      });
+
+      if (error) throw error;
+
+      if (!snapshotData || snapshotData.length === 0) {
+        toast.error('Snapshot not found for this message.');
+        logger.warn(`Snapshot not found for message ID: ${messageIdToRestore}`);
+        return null; // Indicate failure or handle appropriately
+      }
+
+      const snapshot = snapshotData[0]; // Assuming message IDs are unique per user
+      restoreWorkbenchStateFromSnapshot(snapshot.workbench_files);
+
+      // Find the index of the message we restored to
+      const chat = await getChat(chatId.get() as string); // Re-fetch potentially?
+      if (!chat) return null;
+
+      const messageIndex = chat.messages.findIndex(m => m.id === messageIdToRestore);
+      if (messageIndex === -1) {
+        toast.error('Could not find the corresponding message in history.');
+        return null;
+      }
+
+      // Return the messages up to and including the snapshot message
+      return chat.messages.slice(0, messageIndex + 1);
+
+    } catch (error) {
+      toast.error('Failed to restore snapshot');
+      logger.error('Failed to restore snapshot:', error);
+      return null;
+    }
+  };
+
+  return {
+    ready: !mixedId || ready,
+    initialMessages,
+    availableSnapshots, // Expose snapshot list for UI
+    restoreSnapshot,    // Expose restore function
+    storeMessageHistory: async (messages: ChatMessage[]) => {
+      const currentChatId = chatId.get();
+      const currentDescription = description.get(); // Get current description
+      const currentUrlId = urlId; // Get current URL ID
+
+      // --- Determine Chat ID ---
+      let finalChatId = currentChatId;
+      let isNewChat = false;
+      if (!finalChatId) {
+        try {
+          finalChatId = await generateId();
+          chatId.set(finalChatId); // Update atom immediately
+          isNewChat = true;
+          logger.debug('Generated new chat ID:', finalChatId);
+        } catch (error) {
+          toast.error('Failed to generate chat ID');
+          logger.error(error);
+          return; // Stop if we can't get an ID
+        }
+      }
+      // -------------------------
+
+      if (messages.length === 0 || !finalChatId) {
+        logger.warn('storeMessageHistory called with no messages or no chat ID.');
+        return;
+      }
+
+      // --- Determine Chat Description ---
+      let finalDescription = currentDescription;
+      const { firstArtifact } = workbenchStore; // Get artifact info
+
+      // If it's a new chat and the description isn't set yet...
+      if (isNewChat && !finalDescription) {
+        const firstUserMessage = messages.find(m => m.role === 'user');
+        if (firstUserMessage?.content) {
+          // Try to generate title from first user message
+          finalDescription = firstUserMessage.content.substring(0, 50).trim();
+          if (firstUserMessage.content.length > 50) {
+            finalDescription += '...';
+          }
+          description.set(finalDescription); // Update atom
+          logger.debug('Generated chat description from first message:', finalDescription);
+        } else if (firstArtifact?.title) {
+          // Fallback to artifact title if no user message content
+          finalDescription = firstArtifact.title;
+          description.set(finalDescription);
+          logger.debug('Using artifact title for new chat description:', finalDescription);
+        } else {
+          // Final fallback if no user message and no artifact title
+          finalDescription = 'New Chat'; // Or generate a timestamp-based title
+          description.set(finalDescription);
+          logger.debug('Using default title for new chat description:', finalDescription);
+        }
+      }
+      // If not a new chat, but description was previously empty, try artifact title
+      else if (!finalDescription && firstArtifact?.title) {
+         finalDescription = firstArtifact.title;
+         description.set(finalDescription);
+         logger.debug('Setting chat description from artifact title:', finalDescription);
+      }
+      // ------------------------------
+
+      // --- Determine URL ID ---
+      let finalUrlId = currentUrlId;
+       if (!finalUrlId && firstArtifact?.id) {
+         try {
+           const generatedUrlId = await generateUrlId(firstArtifact.id);
+           // Only navigate if it's a *new* chat being assigned a URL ID
+           if (isNewChat) {
+                navigateChat(generatedUrlId);
+           }
+           setUrlId(generatedUrlId); // Update state
+           finalUrlId = generatedUrlId;
+           logger.debug('Generated URL ID:', finalUrlId);
+         } catch (error) {
+           toast.error('Failed to generate URL ID');
+           logger.error(error);
+           // Decide if we should proceed without URL ID or stop
+         }
+       }
+      // ----------------------
+
+      // --- Save Main Chat History ---
+      try {
+        logger.debug(`Storing messages for chat ${finalChatId} with description: ${finalDescription}`);
+        await storeMessages(
+          finalChatId,
+          messages,
+          finalUrlId, // Use the determined URL ID
+          finalDescription // Use the determined description
+        );
+        // If it was a new chat, trigger navigation *after* successful save
+        if (isNewChat && !finalUrlId) {
+            navigateChat(finalChatId); // Navigate using the main chat ID if no URL ID was generated
+        }
+
+      } catch (error) {
+        toast.error('Failed to save chat history');
+        logger.error('storeMessages error:', error);
+        // If storing failed, revert chat ID atom if it was newly generated
+        if (isNewChat) {
+            chatId.set(undefined);
+        }
+        return; // Don't proceed to snapshot if history save failed
+      }
+
+      // --- Save Snapshot ---
+      // We need the chat ID used for saving the history, which is finalChatId
+      const lastAssistantMessage = [...messages].reverse().find(m => m.role === 'assistant');
+      if (lastAssistantMessage?.id) {
+          // Call saveSnapshot with the correct chat ID and message ID
+          await saveSnapshot(finalChatId, lastAssistantMessage.id);
+      } else {
+        logger.debug('No assistant message found in the latest batch, skipping snapshot.');
+      }
+    },
+    // Add function to navigate to a specific iteration -> REMOVED
+    // Start a new iteration from a previous one -> REMOVED
+  };
+}
+
+// Helper function to restore workbench state -> MOVED & RENAMED restoreWorkbenchStateFromSnapshot
+
+// Get chat by ID or URL ID - updated return type
 async function getChat(id: string): Promise<ChatHistoryItem | null> {
   try {
     const { data: user } = await supabase.auth.getUser();
+    if (!user?.user) return null; // Return null if not authenticated
 
-    if (!user?.user) {
-      return null;
-    }
-
-    // Use RPC function to get chat by ID or URL ID
-    const { data, error } = await supabase
-      .rpc('get_chat', { p_id: id });
-
+    const { data, error } = await supabase.rpc('get_chat', { p_id: id });
     if (error) {
       logger.error('Error fetching chat:', error);
       throw error;
     }
-
-    if (!data || data.length === 0) {
-      return null;
-    }
+    if (!data || data.length === 0) return null;
 
     const chatData = data[0];
     return {
       id: chatData.id,
       urlId: chatData.url_id,
       description: chatData.description,
-      messages: chatData.messages,
-      currentIteration: chatData.current_iteration || 1,
+      messages: chatData.messages, // Assuming messages are already ChatMessage[] type
       timestamp: chatData.updated_at,
     };
   } catch (error) {
+    // Don't re-throw here, return null to indicate chat not found/error
     logger.error('Failed to get chat:', error);
-    throw error;
+    return null;
   }
 }
 
-// Store messages
+// Get all snapshots for a chat
+async function getSnapshotsForChat(chatHistoryId: string): Promise<Array<{ id: string; message_id: string; created_at: string; workbench_files: any }>> {
+  try {
+    const { data: user } = await supabase.auth.getUser();
+    if (!user?.user) return [];
+
+    const { data, error } = await supabase.rpc('get_snapshots_for_chat', { p_chat_history_id: chatHistoryId });
+    if (error) {
+      logger.error('Error fetching snapshots:', error);
+      throw error;
+    }
+    return data || [];
+  } catch (error) {
+    logger.error('Failed to get snapshots:', error);
+    return [];
+  }
+}
+
+// Store messages - updated parameters
 async function storeMessages(
   id: string,
   messages: ChatMessage[],
   urlId?: string,
-  description?: string,
-  currentIteration: number = 1
+  description?: string
+  // currentIteration removed
 ): Promise<void> {
   try {
     const { data: user } = await supabase.auth.getUser();
+    if (!user?.user) throw new Error('User not authenticated');
 
-    if (!user?.user) {
-      throw new Error('User not authenticated');
-    }
+    const params = {
+      p_id: id,
+      p_url_id: urlId ?? null,
+      p_description: description ?? null,
+      p_messages: messages,
+      // p_current_iteration removed
+    };
+    logger.debug('Calling store_chat with params:', params);
 
-    // Use RPC function to store messages
-    const { error } = await supabase
-      .rpc('store_chat', {
-        p_id: id,
-        p_url_id: urlId,
-        p_description: description,
-        p_messages: messages,
-        p_current_iteration: currentIteration
-      });
-
+    const { error } = await supabase.rpc('store_chat', params);
     if (error) {
       logger.error('Error storing messages:', error);
       throw error;
